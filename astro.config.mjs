@@ -4,7 +4,7 @@ export default defineConfig({
   output: "static",
   vite: {
     preview: {
-      allowedHosts: ["demo.piceadigital.com"]
+      allowedHosts: true
     }
   }
 });
