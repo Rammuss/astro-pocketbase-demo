@@ -1,0 +1,945 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Panel Cliente</title>
+    <style is:global>
+      :root {
+        color-scheme: light;
+        --bg: #f4f7fb;
+        --card: #ffffff;
+        --text: #0f172a;
+        --muted: #475569;
+        --line: #dbe3ef;
+        --primary: #0a2540;
+        --primary-2: #12385f;
+        --ok: #0f766e;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+      .wrap { max-width: 980px; margin: 0 auto; padding: 24px 16px 48px; }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow: 0 1px 2px rgba(0,0,0,.04);
+      }
+      h1 { margin: 0 0 16px; font-size: 24px; }
+      h2 { margin: 0 0 12px; font-size: 18px; }
+      .muted { color: var(--muted); }
+      .grid { display: grid; gap: 12px; }
+      .grid.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      @media (max-width: 760px) { .grid.cols-2 { grid-template-columns: 1fr; } }
+      label { font-size: 13px; color: var(--muted); display: block; margin-bottom: 6px; }
+      input, textarea {
+        width: 100%;
+        border: 1px solid #cdd8e8;
+        border-radius: 8px;
+        padding: 10px 12px;
+        font: inherit;
+      }
+      textarea { min-height: 90px; resize: vertical; }
+      .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+      .btn {
+        border: 0;
+        border-radius: 8px;
+        padding: 10px 14px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .btn.primary { background: var(--primary); color: #fff; }
+      .btn.primary:hover { background: var(--primary-2); }
+      .btn.ghost { background: #e7eef8; color: #123; }
+      .msg { font-size: 13px; margin-top: 8px; }
+      .ok { color: var(--ok); }
+      .hidden { display: none; }
+      .svc-item {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 12px;
+        margin-bottom: 10px;
+        background: #f8fbff;
+      }
+      #servicesList input[type="text"],
+      #servicesList input[type="number"],
+      #servicesList textarea {
+        width: 100%;
+        border: 1px solid #cdd8e8;
+        border-radius: 8px;
+        padding: 10px 12px;
+        font: inherit;
+        background: #fff;
+      }
+      #servicesList textarea { min-height: 90px; resize: vertical; }
+      #servicesList input[type="text"]:focus,
+      #servicesList input[type="number"]:focus,
+      #servicesList textarea:focus {
+        outline: none;
+        border-color: #8bb7e6;
+        box-shadow: 0 0 0 3px rgba(65, 131, 196, 0.15);
+      }
+      .field {
+        width: 100%;
+        border: 1px solid #cdd8e8;
+        border-radius: 8px;
+        padding: 10px 12px;
+        font: inherit;
+        background: #fff;
+      }
+      .field:focus {
+        outline: none;
+        border-color: #8bb7e6;
+        box-shadow: 0 0 0 3px rgba(65, 131, 196, 0.15);
+      }
+      .toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        color: #0a2540;
+      }
+      .service-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        gap: 10px;
+      }
+      .service-head .left {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .mini-btn {
+        border: 1px solid #cdd8e8;
+        background: #fff;
+        border-radius: 8px;
+        padding: 4px 8px;
+        cursor: pointer;
+        font-weight: 700;
+      }
+      .mini-btn:hover { background: #f1f6ff; }
+      .pill {
+        font-size: 12px;
+        font-weight: 700;
+        border-radius: 999px;
+        padding: 4px 10px;
+        border: 1px solid #cdd8e8;
+        background: #fff;
+        color: #334155;
+      }
+      .pill.ok {
+        border-color: #8dd3c7;
+        background: #ebfffb;
+        color: #0f766e;
+      }
+      .progress {
+        background: #e8eef8;
+        border-radius: 999px;
+        height: 10px;
+        overflow: hidden;
+      }
+      .progress > div {
+        height: 100%;
+        background: linear-gradient(90deg, #0a2540 0%, #1f5a94 100%);
+        transition: width .25s ease;
+      }
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        margin: 0 0 12px;
+      }
+      .step {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 10px;
+        background: #fff;
+      }
+      .step .k { font-size: 12px; color: var(--muted); }
+      .step .v { font-weight: 700; margin-top: 4px; }
+      .section-title { margin: 0 0 8px; font-size: 20px; }
+      .field-note { font-size: 12px; color: var(--muted); }
+      .chk-row { display: flex; align-items: center; gap: 8px; }
+      .chk-row input { width: auto; }
+      .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+      }
+      @media (max-width: 900px) {
+        .gallery-grid { grid-template-columns: 1fr; }
+      }
+      .gallery-item {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 12px;
+      }
+      .thumb {
+        width: 100%;
+        height: 140px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid var(--line);
+        background: #e9eef6;
+      }
+      .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+      .spacer { height: 12px; }
+      .status { font-size: 12px; color: var(--muted); }
+      .link-btn {
+        border: 0;
+        background: none;
+        color: #1f5a94;
+        padding: 0;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .link-btn:hover { text-decoration: underline; }
+      .counter {
+        margin-top: 4px;
+        font-size: 12px;
+        color: var(--muted);
+        text-align: right;
+      }
+      .warn { color: #b45309; }
+      button:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="topbar">
+        <h1>Panel Cliente</h1>
+        <a class="muted" href="/">Volver al sitio</a>
+      </div>
+
+      <section id="loginCard" class="card">
+        <h2>Iniciar sesión</h2>
+        <p class="muted">Ingresá con tu usuario del sistema.</p>
+        <div class="grid cols-2">
+          <div>
+            <label for="email">Email</label>
+            <input id="email" type="email" placeholder="cliente@dominio.com" />
+          </div>
+          <div>
+            <label for="password">Contraseña</label>
+            <input id="password" type="password" placeholder="********" />
+          </div>
+        </div>
+        <div class="spacer"></div>
+        <button id="loginBtn" class="btn primary" type="button">Entrar</button>
+        <div class="spacer"></div>
+        <button id="forgotBtn" class="link-btn" type="button">Olvidé mi contraseña</button>
+        <div id="loginMsg" class="msg"></div>
+      </section>
+
+      <section id="forgotCard" class="card hidden">
+        <h2>Recuperar contraseña</h2>
+        <p class="muted">Ingresá tu email y te enviaremos un enlace de recuperación.</p>
+        <div>
+          <label for="forgotEmail">Email</label>
+          <input id="forgotEmail" type="email" placeholder="cliente@dominio.com" />
+        </div>
+        <div class="spacer"></div>
+        <div class="row">
+          <button id="sendResetBtn" class="btn primary" type="button">Enviar enlace</button>
+          <button id="backLoginBtn" class="btn ghost" type="button">Volver</button>
+        </div>
+        <div id="forgotMsg" class="msg"></div>
+      </section>
+
+      <section id="appCard" class="hidden">
+        <div class="card">
+          <h2 class="section-title">Progreso de configuración</h2>
+          <div class="steps">
+            <div class="step"><div class="k">Paso 1</div><div class="v">Portada y contacto</div></div>
+            <div class="step"><div class="k">Paso 2</div><div class="v">Servicios</div></div>
+            <div class="step"><div class="k">Paso 3</div><div class="v">Galería</div></div>
+          </div>
+          <div class="progress"><div id="progressBar" style="width: 0%"></div></div>
+          <div id="progressText" class="field-note" style="margin-top:8px;">Completado: 0%</div>
+        </div>
+
+        <div class="spacer"></div>
+
+        <div class="card">
+          <div class="topbar">
+            <h2>Configuración principal</h2>
+            <div class="row">
+              <span id="sessionInfo" class="status"></span>
+              <a id="viewSiteBtn" class="btn ghost" href="/" target="_blank" rel="noopener noreferrer">Ver web</a>
+              <button id="logoutBtn" class="btn ghost" type="button">Salir</button>
+            </div>
+          </div>
+
+          <div class="grid cols-2">
+            <div>
+              <label for="heroTitle">Título principal</label>
+              <input id="heroTitle" type="text" maxlength="90" />
+              <div id="heroTitleCounter" class="counter">0/90</div>
+            </div>
+            <div>
+              <label for="phone">Teléfono</label>
+              <input id="phone" type="text" />
+            </div>
+            <div>
+              <label for="whatsappNumber">WhatsApp número</label>
+              <input id="whatsappNumber" type="text" placeholder="595981236300" />
+              <div class="field-note">Solo números. Generamos el enlace automáticamente.</div>
+            </div>
+            <div>
+              <label for="address">Dirección</label>
+              <input id="address" type="text" maxlength="120" />
+              <div id="addressCounter" class="counter">0/120</div>
+            </div>
+          </div>
+          <div class="spacer"></div>
+          <div>
+            <label for="heroSubtitle">Subtítulo principal</label>
+            <textarea id="heroSubtitle" maxlength="220"></textarea>
+            <div id="heroSubtitleCounter" class="counter">0/220</div>
+          </div>
+          <div class="spacer"></div>
+          <button id="saveSettingsBtn" class="btn primary" type="button">Guardar portada y contacto</button>
+          <div id="settingsMsg" class="msg"></div>
+          <div id="settingsLastSaved" class="field-note"></div>
+          <div class="field-note">Límites: título 90, subtítulo 220, dirección 120.</div>
+        </div>
+
+        <div class="spacer"></div>
+
+        <div class="card">
+          <h2>Servicios</h2>
+          <p class="muted">Editá los textos y activá/desactivá servicios.</p>
+          <div id="servicesList"></div>
+          <button id="saveServicesBtn" class="btn primary" type="button">Guardar servicios</button>
+          <div id="servicesMsg" class="msg"></div>
+          <div id="servicesLastSaved" class="field-note"></div>
+        </div>
+
+        <div class="spacer"></div>
+
+        <div class="card">
+          <h2>Galería</h2>
+          <p class="muted">Gestioná imágenes del sitio. Podés cambiar imagen, orden y estado activo.</p>
+          <div id="galleryList" class="gallery-grid"></div>
+          <div class="spacer"></div>
+          <button id="saveGalleryBtn" class="btn primary" type="button">Guardar galería</button>
+          <div id="galleryMsg" class="msg"></div>
+          <div id="galleryLastSaved" class="field-note"></div>
+        </div>
+
+        <div class="spacer"></div>
+
+        <div class="card">
+          <h2>Seguridad</h2>
+          <p class="muted">Cambiar contraseña del usuario actual.</p>
+          <div class="grid cols-2">
+            <div>
+              <label for="currentPassword">Contraseña actual</label>
+              <input id="currentPassword" type="password" minlength="8" />
+            </div>
+            <div>
+              <label for="newPassword">Nueva contraseña</label>
+              <input id="newPassword" type="password" minlength="8" />
+            </div>
+            <div>
+              <label for="newPassword2">Confirmar contraseña</label>
+              <input id="newPassword2" type="password" minlength="8" />
+            </div>
+          </div>
+          <div class="spacer"></div>
+          <button id="changePasswordBtn" class="btn primary" type="button">Cambiar contraseña</button>
+          <div id="passwordMsg" class="msg"></div>
+        </div>
+      </section>
+    </div>
+
+    <script is:inline>
+      (() => {
+        const pbUrl = (localStorage.getItem("pb_url") || "http://127.0.0.1:8090").replace(/\/$/, "");
+        const key = "panel_user_auth";
+
+        const loginCard = document.getElementById("loginCard");
+        const appCard = document.getElementById("appCard");
+        const forgotCard = document.getElementById("forgotCard");
+        const loginMsg = document.getElementById("loginMsg");
+        const forgotMsg = document.getElementById("forgotMsg");
+        const settingsMsg = document.getElementById("settingsMsg");
+        const servicesMsg = document.getElementById("servicesMsg");
+        const galleryMsg = document.getElementById("galleryMsg");
+        const passwordMsg = document.getElementById("passwordMsg");
+        const settingsLastSaved = document.getElementById("settingsLastSaved");
+        const servicesLastSaved = document.getElementById("servicesLastSaved");
+        const galleryLastSaved = document.getElementById("galleryLastSaved");
+        const servicesList = document.getElementById("servicesList");
+        const galleryList = document.getElementById("galleryList");
+        const sessionInfo = document.getElementById("sessionInfo");
+        const heroTitleCounter = document.getElementById("heroTitleCounter");
+        const heroSubtitleCounter = document.getElementById("heroSubtitleCounter");
+        const addressCounter = document.getElementById("addressCounter");
+
+        const state = {
+          token: "",
+          userEmail: "",
+          userId: "",
+          siteSettingsId: "",
+          services: [],
+          gallery: []
+        };
+        let hasUnsavedChanges = false;
+
+        function setMsg(el, text, ok = false) {
+          el.textContent = text || "";
+          el.className = `msg ${ok ? "ok" : ""}`;
+        }
+
+        function markDirty() {
+          hasUnsavedChanges = true;
+        }
+
+        function markSaved() {
+          hasUnsavedChanges = false;
+        }
+
+        function setSaving(buttonId, saving) {
+          const btn = document.getElementById(buttonId);
+          if (!btn) return;
+          btn.disabled = saving;
+        }
+
+        function sanitizeText(v, maxLen = 255) {
+          const clean = (v || "").replace(/<[^>]*>/g, "").trim();
+          return clean.slice(0, maxLen);
+        }
+
+        function updateCounters() {
+          const t = document.getElementById("heroTitle").value || "";
+          const s = document.getElementById("heroSubtitle").value || "";
+          const a = document.getElementById("address").value || "";
+          heroTitleCounter.textContent = `${t.length}/90`;
+          heroSubtitleCounter.textContent = `${s.length}/220`;
+          addressCounter.textContent = `${a.length}/120`;
+          heroTitleCounter.className = `counter ${t.length > 80 ? "warn" : ""}`;
+          heroSubtitleCounter.className = `counter ${s.length > 200 ? "warn" : ""}`;
+          addressCounter.className = `counter ${a.length > 100 ? "warn" : ""}`;
+        }
+
+        function authHeaders() {
+          return {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${state.token}`
+          };
+        }
+
+        function showApp() {
+          loginCard.classList.add("hidden");
+          forgotCard.classList.add("hidden");
+          appCard.classList.remove("hidden");
+          sessionInfo.textContent = `Sesión: ${state.userEmail}`;
+        }
+
+        function showLogin() {
+          appCard.classList.add("hidden");
+          forgotCard.classList.add("hidden");
+          loginCard.classList.remove("hidden");
+        }
+
+        function showForgot() {
+          appCard.classList.add("hidden");
+          loginCard.classList.add("hidden");
+          forgotCard.classList.remove("hidden");
+          setMsg(forgotMsg, "");
+          const currentEmail = document.getElementById("email").value.trim();
+          if (currentEmail) document.getElementById("forgotEmail").value = currentEmail;
+        }
+
+        async function login() {
+          const email = document.getElementById("email").value.trim();
+          const password = document.getElementById("password").value;
+          setMsg(loginMsg, "");
+
+          if (!email || !password) {
+            setMsg(loginMsg, "Completá email y contraseña.");
+            return;
+          }
+
+          const res = await fetch(`${pbUrl}/api/collections/users/auth-with-password`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ identity: email, password })
+          });
+
+          if (!res.ok) {
+            setMsg(loginMsg, "Credenciales inválidas.");
+            return;
+          }
+
+          const data = await res.json();
+          state.token = data.token;
+          state.userEmail = data.record?.email || email;
+          state.userId = data.record?.id || "";
+          localStorage.setItem(key, JSON.stringify({ token: state.token, email: state.userEmail, id: state.userId }));
+          showApp();
+          await loadAll();
+        }
+
+        async function sendPasswordReset() {
+          const email = document.getElementById("forgotEmail").value.trim();
+          setMsg(forgotMsg, "");
+          if (!email) {
+            setMsg(forgotMsg, "Ingresá un email válido.");
+            return;
+          }
+
+          const res = await fetch(`${pbUrl}/api/collections/users/request-password-reset`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email })
+          });
+
+          if (!res.ok) {
+            setMsg(forgotMsg, "No se pudo enviar el enlace. Verificá SMTP o el email.");
+            return;
+          }
+          setMsg(forgotMsg, "Si el email existe, enviamos el enlace de recuperación.", true);
+        }
+
+        async function loadSettings() {
+          const res = await fetch(`${pbUrl}/api/collections/site_settings/records?page=1&perPage=1&sort=-created`, {
+            headers: authHeaders()
+          });
+          if (!res.ok) throw new Error("No se pudo leer site_settings.");
+          const json = await res.json();
+          const s = json?.items?.[0];
+          if (!s) throw new Error("No hay registro en site_settings.");
+
+          state.siteSettingsId = s.id;
+          document.getElementById("heroTitle").value = s.hero_title || "";
+          document.getElementById("heroSubtitle").value = s.hero_subtitle || "";
+          document.getElementById("phone").value = s.phone || "";
+          const w = (s.whatsapp_url || "").trim();
+          const m = w.match(/wa\.me\/(\d+)/i);
+          document.getElementById("whatsappNumber").value = m ? m[1] : "";
+          document.getElementById("address").value = s.address || "";
+          updateCounters();
+        }
+
+        function renderServices() {
+          servicesList.innerHTML = "";
+          state.services.forEach((svc, idx) => {
+            const item = document.createElement("div");
+            item.className = "svc-item";
+            const active = !!svc.is_active;
+            item.innerHTML = `
+              <div class="service-head">
+                <div class="left">
+                  <strong>Servicio ${idx + 1}</strong>
+                  <button class="mini-btn" type="button" data-action="svc-up" data-i="${idx}" title="Subir">↑</button>
+                  <button class="mini-btn" type="button" data-action="svc-down" data-i="${idx}" title="Bajar">↓</button>
+                </div>
+                <span class="pill ${active ? "ok" : ""}">${active ? "Activo" : "Inactivo"}</span>
+              </div>
+              <div class="grid cols-2">
+                <div>
+                  <label>Título</label>
+                  <input class="field" data-k="title" data-i="${idx}" type="text" value="${(svc.title || "").replace(/"/g, "&quot;")}" />
+                </div>
+                <div>
+                  <label>Orden</label>
+                  <input class="field" data-k="order" data-i="${idx}" type="number" value="${Number(svc.order || 0)}" />
+                </div>
+              </div>
+              <div class="spacer"></div>
+              <label>Descripción</label>
+              <textarea class="field" data-k="description" data-i="${idx}">${svc.description || ""}</textarea>
+              <div class="spacer"></div>
+              <label class="toggle"><input data-k="is_active" data-i="${idx}" type="checkbox" ${active ? "checked" : ""} /> Visible en la web</label>
+            `;
+            servicesList.appendChild(item);
+          });
+
+          servicesList.querySelectorAll("input, textarea").forEach((el) => {
+            el.addEventListener("input", onServiceInput);
+            el.addEventListener("change", onServiceInput);
+          });
+          servicesList.querySelectorAll("button[data-action]").forEach((btn) => {
+            btn.addEventListener("click", onServiceMove);
+          });
+        }
+
+        function mapImageUrl(record) {
+          if (!record?.image) return "";
+          return `${pbUrl}/api/files/gallery/${record.id}/${record.image}`;
+        }
+
+        function renderGallery() {
+          galleryList.innerHTML = "";
+          state.gallery.forEach((img, idx) => {
+            const item = document.createElement("div");
+            item.className = "gallery-item";
+            item.innerHTML = `
+              <div class="service-head" style="margin-bottom:8px;">
+                <div class="left">
+                  <strong>Imagen ${idx + 1}</strong>
+                  <button class="mini-btn" type="button" data-action="gal-up" data-gi="${idx}" title="Subir">↑</button>
+                  <button class="mini-btn" type="button" data-action="gal-down" data-gi="${idx}" title="Bajar">↓</button>
+                </div>
+                <span class="pill ${img.is_active ? "ok" : ""}">${img.is_active ? "Activa" : "Inactiva"}</span>
+              </div>
+              <img class="thumb" src="${mapImageUrl(img)}" alt="${(img.title || "Imagen").replace(/"/g, "&quot;")}" />
+              <div class="spacer"></div>
+              <label>Orden</label>
+              <input data-gk="order" data-gi="${idx}" type="number" value="${Number(img.order || 0)}" />
+              <div class="spacer"></div>
+              <label class="chk-row"><input data-gk="is_active" data-gi="${idx}" type="checkbox" ${img.is_active ? "checked" : ""} /> Activo</label>
+              <div class="spacer"></div>
+              <label>Cambiar imagen</label>
+              <input data-gk="image_file" data-gi="${idx}" type="file" accept="image/*" />
+              <div class="field-note">Si no elegís archivo, mantiene la imagen actual.</div>
+            `;
+            galleryList.appendChild(item);
+          });
+
+          galleryList.querySelectorAll("input").forEach((el) => {
+            el.addEventListener("input", onGalleryInput);
+            el.addEventListener("change", onGalleryInput);
+          });
+          galleryList.querySelectorAll("button[data-action]").forEach((btn) => {
+            btn.addEventListener("click", onGalleryMove);
+          });
+        }
+
+        function onServiceInput(e) {
+          const i = Number(e.target.dataset.i);
+          const k = e.target.dataset.k;
+          if (!state.services[i]) return;
+          if (k === "is_active") {
+            state.services[i][k] = !!e.target.checked;
+          } else if (k === "order") {
+            state.services[i][k] = Number(e.target.value || 0);
+          } else {
+            state.services[i][k] = e.target.value;
+          }
+          markDirty();
+          updateProgress();
+        }
+
+        function onServiceMove(e) {
+          const i = Number(e.currentTarget.dataset.i);
+          const action = e.currentTarget.dataset.action;
+          if (!Number.isInteger(i)) return;
+          const j = action === "svc-up" ? i - 1 : i + 1;
+          if (j < 0 || j >= state.services.length) return;
+          [state.services[i], state.services[j]] = [state.services[j], state.services[i]];
+          state.services.forEach((s, idx) => { s.order = idx + 1; });
+          renderServices();
+          markDirty();
+          updateProgress();
+        }
+
+        async function loadServices() {
+          const res = await fetch(`${pbUrl}/api/collections/services/records?page=1&perPage=50&sort=order`, {
+            headers: authHeaders()
+          });
+          if (!res.ok) throw new Error("No se pudo leer services.");
+          const json = await res.json();
+          state.services = json?.items || [];
+          renderServices();
+        }
+
+        function onGalleryInput(e) {
+          const i = Number(e.target.dataset.gi);
+          const k = e.target.dataset.gk;
+          if (!state.gallery[i]) return;
+          if (k === "is_active") {
+            state.gallery[i][k] = !!e.target.checked;
+          } else if (k === "order") {
+            state.gallery[i][k] = Number(e.target.value || 0);
+          } else if (k === "image_file") {
+            const file = e.target.files?.[0];
+            state.gallery[i]._newFile = file || null;
+          }
+          markDirty();
+          updateProgress();
+        }
+
+        function onGalleryMove(e) {
+          const i = Number(e.currentTarget.dataset.gi);
+          const action = e.currentTarget.dataset.action;
+          if (!Number.isInteger(i)) return;
+          const j = action === "gal-up" ? i - 1 : i + 1;
+          if (j < 0 || j >= state.gallery.length) return;
+          [state.gallery[i], state.gallery[j]] = [state.gallery[j], state.gallery[i]];
+          state.gallery.forEach((g, idx) => { g.order = idx + 1; });
+          renderGallery();
+          markDirty();
+          updateProgress();
+        }
+
+        async function loadGallery() {
+          const res = await fetch(`${pbUrl}/api/collections/gallery/records?page=1&perPage=50&sort=order`, {
+            headers: authHeaders()
+          });
+          if (!res.ok) throw new Error("No se pudo leer gallery.");
+          const json = await res.json();
+          state.gallery = json?.items || [];
+          renderGallery();
+          updateProgress();
+        }
+
+        function updateProgress() {
+          const hasHero = !!document.getElementById("heroTitle")?.value?.trim();
+          const hasContact = !!document.getElementById("phone")?.value?.trim() || !!document.getElementById("address")?.value?.trim();
+          const activeServices = state.services.filter((s) => s.is_active).length;
+          const activeGallery = state.gallery.filter((g) => g.is_active).length;
+
+          let pct = 0;
+          if (hasHero) pct += 35;
+          if (hasContact) pct += 20;
+          if (activeServices > 0) pct += 25;
+          if (activeGallery > 0) pct += 20;
+
+          const bar = document.getElementById("progressBar");
+          const txt = document.getElementById("progressText");
+          if (bar) bar.style.width = `${pct}%`;
+          if (txt) txt.textContent = `Completado: ${pct}% · ${activeServices} servicios activos · ${activeGallery} imágenes activas`;
+        }
+
+        async function saveSettings() {
+          setSaving("saveSettingsBtn", true);
+          setMsg(settingsMsg, "");
+          if (!state.siteSettingsId) {
+            setMsg(settingsMsg, "Falta registro de site_settings.");
+            setSaving("saveSettingsBtn", false);
+            return;
+          }
+          const body = {
+            hero_title: sanitizeText(document.getElementById("heroTitle").value, 90),
+            hero_subtitle: sanitizeText(document.getElementById("heroSubtitle").value, 220),
+            phone: sanitizeText(document.getElementById("phone").value, 30).replace(/[^\d+\s-]/g, ""),
+            whatsapp_url: "",
+            address: sanitizeText(document.getElementById("address").value, 120)
+          };
+          const rawWa = document.getElementById("whatsappNumber").value || "";
+          const waDigits = rawWa.replace(/\D/g, "");
+          if (waDigits) body.whatsapp_url = `https://wa.me/${waDigits}`;
+          if (!body.hero_title.trim()) {
+            setMsg(settingsMsg, "El título principal es obligatorio.");
+            setSaving("saveSettingsBtn", false);
+            return;
+          }
+          if (rawWa && waDigits.length < 8) {
+            setMsg(settingsMsg, "WhatsApp número parece inválido.");
+            setSaving("saveSettingsBtn", false);
+            return;
+          }
+          const res = await fetch(`${pbUrl}/api/collections/site_settings/records/${state.siteSettingsId}`, {
+            method: "PATCH",
+            headers: authHeaders(),
+            body: JSON.stringify(body)
+          });
+          if (!res.ok) {
+            setMsg(settingsMsg, `Error al guardar configuración (${res.status}).`);
+            setSaving("saveSettingsBtn", false);
+            return;
+          }
+          setMsg(settingsMsg, "Guardado correctamente.", true);
+          settingsLastSaved.textContent = `Última actualización: ${new Date().toLocaleString()}`;
+          markSaved();
+          updateProgress();
+          setSaving("saveSettingsBtn", false);
+        }
+
+        async function saveServices() {
+          setSaving("saveServicesBtn", true);
+          setMsg(servicesMsg, "");
+          for (const svc of state.services) {
+            const body = {
+              title: sanitizeText(svc.title || "", 70),
+              description: sanitizeText(svc.description || "", 180),
+              order: Number(svc.order || 0),
+              is_active: !!svc.is_active
+            };
+            const res = await fetch(`${pbUrl}/api/collections/services/records/${svc.id}`, {
+              method: "PATCH",
+              headers: authHeaders(),
+              body: JSON.stringify(body)
+            });
+            if (!res.ok) {
+              setMsg(servicesMsg, `Error guardando servicio "${svc.title || svc.id}" (${res.status}).`);
+              setSaving("saveServicesBtn", false);
+              return;
+            }
+          }
+          setMsg(servicesMsg, "Servicios guardados.", true);
+          servicesLastSaved.textContent = `Última actualización: ${new Date().toLocaleString()}`;
+          markSaved();
+          updateProgress();
+          setSaving("saveServicesBtn", false);
+        }
+
+        async function saveGallery() {
+          setSaving("saveGalleryBtn", true);
+          setMsg(galleryMsg, "");
+          for (const img of state.gallery) {
+            const hasNewFile = !!img._newFile;
+            if (hasNewFile) {
+              const form = new FormData();
+              form.append("order", String(Number(img.order || 0)));
+              form.append("is_active", String(!!img.is_active));
+              form.append("image", img._newFile);
+              const res = await fetch(`${pbUrl}/api/collections/gallery/records/${img.id}`, {
+                method: "PATCH",
+                headers: { Authorization: `Bearer ${state.token}` },
+                body: form
+              });
+              if (!res.ok) {
+                setMsg(galleryMsg, `Error guardando imagen ${img.id} (${res.status}).`);
+                setSaving("saveGalleryBtn", false);
+                return;
+              }
+            } else {
+              const body = {
+                order: Number(img.order || 0),
+                is_active: !!img.is_active
+              };
+              const res = await fetch(`${pbUrl}/api/collections/gallery/records/${img.id}`, {
+                method: "PATCH",
+                headers: authHeaders(),
+                body: JSON.stringify(body)
+              });
+              if (!res.ok) {
+                setMsg(galleryMsg, `Error guardando imagen ${img.id} (${res.status}).`);
+                setSaving("saveGalleryBtn", false);
+                return;
+              }
+            }
+          }
+          await loadGallery();
+          setMsg(galleryMsg, "Galería guardada.", true);
+          galleryLastSaved.textContent = `Última actualización: ${new Date().toLocaleString()}`;
+          markSaved();
+          updateProgress();
+          setSaving("saveGalleryBtn", false);
+        }
+
+        async function changePassword() {
+          setMsg(passwordMsg, "");
+          if (!state.userId) {
+            setMsg(passwordMsg, "No se identificó el usuario actual.");
+            return;
+          }
+          const p1 = document.getElementById("newPassword").value;
+          const p2 = document.getElementById("newPassword2").value;
+          const current = document.getElementById("currentPassword").value;
+          if (current.length < 8) {
+            setMsg(passwordMsg, "Ingresá tu contraseña actual.");
+            return;
+          }
+          if (p1.length < 8) {
+            setMsg(passwordMsg, "La contraseña debe tener al menos 8 caracteres.");
+            return;
+          }
+          if (p1 !== p2) {
+            setMsg(passwordMsg, "Las contraseñas no coinciden.");
+            return;
+          }
+          const res = await fetch(`${pbUrl}/api/collections/users/records/${state.userId}`, {
+            method: "PATCH",
+            headers: authHeaders(),
+            body: JSON.stringify({ oldPassword: current, password: p1, passwordConfirm: p2 })
+          });
+          if (!res.ok) {
+            setMsg(passwordMsg, `No se pudo cambiar contraseña (${res.status}).`);
+            return;
+          }
+          document.getElementById("currentPassword").value = "";
+          document.getElementById("newPassword").value = "";
+          document.getElementById("newPassword2").value = "";
+          setMsg(passwordMsg, "Contraseña actualizada.", true);
+        }
+
+        async function loadAll() {
+          try {
+            await loadSettings();
+            await loadServices();
+            await loadGallery();
+          } catch (err) {
+            setMsg(settingsMsg, err.message || "Error cargando datos.");
+          }
+        }
+
+        function logout() {
+          localStorage.removeItem(key);
+          state.token = "";
+          state.userEmail = "";
+          showLogin();
+        }
+
+        document.getElementById("loginBtn").addEventListener("click", () => {
+          login().catch(() => setMsg(loginMsg, "No se pudo iniciar sesión."));
+        });
+        document.getElementById("forgotBtn").addEventListener("click", showForgot);
+        document.getElementById("backLoginBtn").addEventListener("click", showLogin);
+        document.getElementById("sendResetBtn").addEventListener("click", () => {
+          sendPasswordReset().catch(() => setMsg(forgotMsg, "Error enviando recuperación."));
+        });
+        document.getElementById("saveSettingsBtn").addEventListener("click", () => {
+          saveSettings().catch(() => setMsg(settingsMsg, "Error al guardar."));
+        });
+        document.getElementById("saveServicesBtn").addEventListener("click", () => {
+          saveServices().catch(() => setMsg(servicesMsg, "Error al guardar servicios."));
+        });
+        document.getElementById("saveGalleryBtn").addEventListener("click", () => {
+          saveGallery().catch(() => setMsg(galleryMsg, "Error al guardar galería."));
+        });
+        document.getElementById("changePasswordBtn").addEventListener("click", () => {
+          changePassword().catch(() => setMsg(passwordMsg, "Error cambiando contraseña."));
+        });
+        document.getElementById("logoutBtn").addEventListener("click", logout);
+        ["heroTitle","heroSubtitle","phone","whatsappNumber","address"].forEach((id) => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          el.addEventListener("input", () => {
+            markDirty();
+            updateCounters();
+            updateProgress();
+          });
+        });
+        window.addEventListener("beforeunload", (e) => {
+          if (!hasUnsavedChanges) return;
+          e.preventDefault();
+          e.returnValue = "";
+        });
+
+        const raw = localStorage.getItem(key);
+        if (raw) {
+          try {
+            const saved = JSON.parse(raw);
+            if (saved?.token) {
+              state.token = saved.token;
+              state.userEmail = saved.email || "";
+              state.userId = saved.id || "";
+              showApp();
+              loadAll().catch(() => {
+                logout();
+              });
+            }
+          } catch {
+            localStorage.removeItem(key);
+          }
+        }
+      })();
+    </script>
+  </body>
+</html>

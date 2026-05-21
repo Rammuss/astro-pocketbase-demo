@@ -1,0 +1,607 @@
+﻿<!DOCTYPE html>
+
+<html class="light" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TechSolutions - Servicio TÃ©cnico Profesional</title>
+<script is:inline src="/assets/js/tailwindcdn.local.js"></script>
+<link href="/assets/css/stitch-fonts.css" rel="stylesheet"/>
+
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-fixed-dim": "#ffb693",
+                      "inverse-on-surface": "#eaf1ff",
+                      "error-container": "#ffdad6",
+                      "on-background": "#0b1c30",
+                      "tertiary": "#1f0700",
+                      "on-primary-fixed": "#001c37",
+                      "on-surface-variant": "#43474d",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary": "#5c5f61",
+                      "surface-container-high": "#dce9ff",
+                      "primary-container": "#0a2540",
+                      "on-tertiary-container": "#e86100",
+                      "secondary-fixed-dim": "#c4c7ca",
+                      "surface-container-low": "#eff4ff",
+                      "background": "#f8f9ff",
+                      "secondary-container": "#e0e3e6",
+                      "on-primary-container": "#768dad",
+                      "on-secondary-container": "#626567",
+                      "primary-fixed-dim": "#b0c8eb",
+                      "on-secondary-fixed": "#191c1e",
+                      "surface-tint": "#49607e",
+                      "on-tertiary-fixed": "#351000",
+                      "surface-variant": "#d3e4fe",
+                      "on-surface": "#0b1c30",
+                      "inverse-primary": "#b0c8eb",
+                      "outline": "#74777e",
+                      "tertiary-container": "#421600",
+                      "secondary-fixed": "#e0e3e6",
+                      "tertiary-fixed": "#ffdbcc",
+                      "surface": "#f8f9ff",
+                      "on-error": "#ffffff",
+                      "on-primary-fixed-variant": "#314865",
+                      "on-primary": "#ffffff",
+                      "primary": "#000f22",
+                      "inverse-surface": "#213145",
+                      "on-tertiary-fixed-variant": "#7a3000",
+                      "outline-variant": "#c4c6ce",
+                      "surface-bright": "#f8f9ff",
+                      "surface-container": "#e5eeff",
+                      "on-error-container": "#93000a",
+                      "on-secondary-fixed-variant": "#44474a",
+                      "surface-dim": "#cbdbf5",
+                      "on-secondary": "#ffffff",
+                      "error": "#ba1a1a",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-highest": "#d3e4fe",
+                      "primary-fixed": "#d2e4ff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "gutter": "24px",
+                      "margin-desktop": "40px",
+                      "container-max": "1280px",
+                      "base": "8px"
+              },
+              "fontFamily": {
+                      "body-md": ["Inter"],
+                      "headline-xl": ["Hanken Grotesk"],
+                      "headline-md": ["Hanken Grotesk"],
+                      "body-lg": ["Inter"],
+                      "button": ["Hanken Grotesk"],
+                      "headline-lg": ["Hanken Grotesk"],
+                      "label-md": ["JetBrains Mono"],
+                      "headline-xl-mobile": ["Hanken Grotesk"]
+              },
+              "fontSize": {
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "button": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "600"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                      "headline-xl-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .scroll-smooth { scroll-behavior: smooth; }
+        .technical-grid {
+            background-image: radial-gradient(circle at 1px 1px, #c4c6ce 1px, transparent 0);
+            background-size: 40px 40px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md text-body-md scroll-smooth overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-primary text-on-surface dark:text-on-primary docked full-width top-0 sticky border-b border-outline-variant dark:border-outline shadow-sm z-50 transition-all duration-300 h-20">
+<div class="flex justify-between items-center w-full px-margin-desktop max-w-container-max mx-auto h-full">
+<div class="flex items-center gap-4 cursor-pointer active:scale-95 duration-150">
+<span class="material-symbols-outlined text-primary dark:text-on-primary">settings_suggest</span>
+<h1 class="font-headline-md text-headline-md font-bold tracking-tight text-on-surface dark:text-on-primary">TECHSOLUTIONS</h1>
+</div>
+<!-- Desktop Nav -->
+<nav class="hidden md:flex gap-8 items-center">
+<a class="text-on-tertiary-container dark:text-tertiary-fixed-dim font-bold hover:text-on-tertiary-container dark:hover:text-tertiary-fixed-dim transition-colors cursor-pointer" href="#inicio">Inicio</a>
+<a class="text-on-surface-variant dark:text-on-primary-container font-medium hover:text-on-tertiary-container dark:hover:text-tertiary-fixed-dim transition-colors cursor-pointer" href="#servicios">Servicios</a>
+<a class="text-on-surface-variant dark:text-on-primary-container font-medium hover:text-on-tertiary-container dark:hover:text-tertiary-fixed-dim transition-colors cursor-pointer" href="#nosotros">Nosotros</a>
+<a class="text-on-surface-variant dark:text-on-primary-container font-medium hover:text-on-tertiary-container dark:hover:text-tertiary-fixed-dim transition-colors cursor-pointer" href="#testimonios">Testimonios</a>
+<a class="text-on-surface-variant dark:text-on-primary-container font-medium hover:text-on-tertiary-container dark:hover:text-tertiary-fixed-dim transition-colors cursor-pointer" href="#contacto">Contacto</a>
+</nav>
+<button class="md:hidden p-2 active:scale-95 duration-150" onclick="toggleDrawer()">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</header>
+<!-- Navigation Drawer (Mobile) -->
+<div class="fixed inset-0 bg-black/40 z-[60] hidden transition-opacity duration-300 opacity-0" id="drawer-overlay" onclick="toggleDrawer()"></div>
+<aside class="fixed right-0 top-0 h-full w-80 bg-surface-container dark:bg-primary-container z-[70] translate-x-full transition-transform duration-300 ease-in-out shadow-xl flex flex-col pt-6" id="nav-drawer">
+<div class="px-6 pb-6 flex justify-between items-center">
+<h2 class="font-headline-md text-headline-md text-on-surface dark:text-on-primary">MenÃº de Servicio</h2>
+<button class="p-1" onclick="toggleDrawer()"><span class="material-symbols-outlined">close</span></button>
+</div>
+<nav class="flex flex-col">
+<a class="bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary rounded-full mx-2 my-1 px-4 py-3 flex items-center gap-4 font-body-lg text-body-lg" href="#inicio" onclick="toggleDrawer()">
+<span class="material-symbols-outlined">home</span> Inicio
+            </a>
+<a class="text-on-surface-variant dark:text-on-primary-container px-4 py-3 hover:bg-surface-container-high dark:hover:bg-primary-fixed-dim/20 flex items-center gap-4 font-body-lg text-body-lg transition-colors" href="#servicios" onclick="toggleDrawer()">
+<span class="material-symbols-outlined">build</span> Servicios
+            </a>
+<a class="text-on-surface-variant dark:text-on-primary-container px-4 py-3 hover:bg-surface-container-high dark:hover:bg-primary-fixed-dim/20 flex items-center gap-4 font-body-lg text-body-lg transition-colors" href="#nosotros" onclick="toggleDrawer()">
+<span class="material-symbols-outlined">info</span> Nosotros
+            </a>
+<a class="text-on-surface-variant dark:text-on-primary-container px-4 py-3 hover:bg-surface-container-high dark:hover:bg-primary-fixed-dim/20 flex items-center gap-4 font-body-lg text-body-lg transition-colors" href="#testimonios" onclick="toggleDrawer()">
+<span class="material-symbols-outlined">reviews</span> Testimonios
+            </a>
+<a class="text-on-surface-variant dark:text-on-primary-container px-4 py-3 hover:bg-surface-container-high dark:hover:bg-primary-fixed-dim/20 flex items-center gap-4 font-body-lg text-body-lg transition-colors" href="#contacto" onclick="toggleDrawer()">
+<span class="material-symbols-outlined">mail</span> Contacto
+            </a>
+</nav>
+</aside>
+<main>
+<!-- Section 1: Hero -->
+<section class="relative min-h-[795px] flex items-center pt-20 overflow-hidden technical-grid" id="inicio">
+<div class="px-margin-desktop max-w-container-max mx-auto w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+<div class="space-y-8 animate-fade-in-up">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-container-highest text-on-surface-variant border border-outline-variant">
+<span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim animate-pulse"></span>
+<span class="font-label-md text-label-md">DISPONIBILIDAD INMEDIATA</span>
+</div>
+<h2 id="hero-title" class="font-headline-xl text-headline-xl text-on-surface max-w-xl">
+                        Expertos en <span class="text-on-tertiary-container">Servicio TÃ©cnico</span> Profesional
+                    </h2>
+<p id="hero-subtitle" class="font-body-lg text-body-lg text-on-surface-variant max-w-lg">
+                        Soluciones rÃ¡pidas y garantizadas para tus equipos informÃ¡ticos y dispositivos mÃ³viles. Recuperamos tu operatividad con precisiÃ³n industrial.
+                    </p>
+<div class="flex flex-wrap gap-4">
+<a id="cta-primary" class="bg-tertiary-fixed-dim text-on-tertiary-fixed px-8 py-4 rounded-lg font-button text-button hover:bg-on-tertiary-container hover:text-white transition-all shadow-lg hover:shadow-xl active:scale-95" href="#contacto">
+                            Solicitar Presupuesto
+                        </a>
+<a class="border-2 border-primary text-primary px-8 py-4 rounded-lg font-button text-button hover:bg-primary hover:text-white transition-all active:scale-95" href="#servicios">
+                            Ver Servicios
+                        </a>
+</div>
+</div>
+<div class="relative hidden lg:block">
+<div class="absolute -inset-4 bg-primary/5 rounded-full blur-3xl"></div>
+<img id="gallery-image-1" alt="Laboratorio de servicio tÃ©cnico" class="rounded-xl shadow-2xl relative z-10 w-full h-[500px] object-cover" data-alt="A clean, highly organized professional electronics repair laboratory with bright, high-key lighting. The scene features precision tools, a modern digital microscope, and neatly arranged circuit boards on an anti-static work surface. The color palette is dominated by cool blues, metallic grays, and crisp whites, conveying a sense of technical expertise and surgical precision." src="/assets/img/stitch/image1.jpg"/>
+<div class="absolute -bottom-8 -left-8 bg-white p-6 rounded-xl shadow-xl z-20 border border-outline-variant">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-surface-container-high rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">verified</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant">GarantÃ­a Total</p>
+<p class="font-headline-md text-headline-md text-primary">90 DÃ­as</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 2: Servicios (Bento Grid) -->
+<section class="py-20 bg-surface" id="servicios">
+<div class="px-margin-desktop max-w-container-max mx-auto">
+<div class="mb-16 text-center max-w-2xl mx-auto">
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-4">Nuestras Especialidades</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Ofrecemos un catÃ¡logo completo de soluciones tÃ©cnicas diseÃ±adas para mantener tus herramientas de trabajo al 100%.</p>
+</div>
+<div id="services-grid" class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Service 1 -->
+<div class="group bg-white p-8 rounded-xl border border-outline-variant hover:border-tertiary-fixed-dim hover:shadow-xl transition-all duration-300 flex flex-col items-start gap-6">
+<div class="w-14 h-14 bg-surface-container-low rounded-lg flex items-center justify-center group-hover:bg-tertiary-fixed-dim transition-colors">
+<span class="material-symbols-outlined text-primary group-hover:text-on-tertiary-fixed">precision_manufacturing</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface">Mantenimiento Preventivo</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Limpieza profunda, optimizaciÃ³n tÃ©rmica y revisiÃ³n de componentes para evitar fallos futuros inesperados.</p>
+<div class="mt-auto pt-4 flex items-center text-primary font-button gap-2 group-hover:translate-x-2 transition-transform">
+                            Saber mÃ¡s <span class="material-symbols-outlined">arrow_forward</span>
+</div>
+</div>
+<!-- Service 2 -->
+<div class="group bg-primary text-white p-8 rounded-xl shadow-xl flex flex-col items-start gap-6 hover:scale-[1.02] transition-transform">
+<div class="w-14 h-14 bg-primary-container rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary-fixed-dim">location_chip</span>
+</div>
+<h3 class="font-headline-md text-headline-md">ReparaciÃ³n de Hardware</h3>
+<p class="font-body-md text-body-md text-on-primary-container">DiagnÃ³stico por microelectrÃ³nica, microsoldadura y reemplazo de partes originales con certificaciÃ³n de fÃ¡brica.</p>
+<div class="mt-auto pt-4 flex items-center text-tertiary-fixed-dim font-button gap-2">
+                            Saber mÃ¡s <span class="material-symbols-outlined">arrow_forward</span>
+</div>
+</div>
+<!-- Service 3 -->
+<div class="group bg-white p-8 rounded-xl border border-outline-variant hover:border-tertiary-fixed-dim hover:shadow-xl transition-all duration-300 flex flex-col items-start gap-6">
+<div class="w-14 h-14 bg-surface-container-low rounded-lg flex items-center justify-center group-hover:bg-tertiary-fixed-dim transition-colors">
+<span class="material-symbols-outlined text-primary group-hover:text-on-tertiary-fixed">terminal</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface">ActualizaciÃ³n de Software</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">InstalaciÃ³n de sistemas operativos, eliminaciÃ³n de malware y configuraciÃ³n de redes empresariales seguras.</p>
+<div class="mt-auto pt-4 flex items-center text-primary font-button gap-2 group-hover:translate-x-2 transition-transform">
+                            Saber mÃ¡s <span class="material-symbols-outlined">arrow_forward</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 3: Sobre Nosotros -->
+<section class="py-20 bg-background overflow-hidden" id="nosotros">
+<div class="px-margin-desktop max-w-container-max mx-auto flex flex-col lg:flex-row gap-16 items-center">
+<div class="w-full lg:w-1/2 relative">
+<div class="grid grid-cols-2 gap-4">
+<img id="gallery-image-2" alt="Ingeniero trabajando" class="rounded-lg shadow-lg w-full h-64 object-cover" data-alt="A focused female electrical engineer wearing professional protective gear, working on a complex industrial motherboard using high-precision tools. The environment is a sleek, modern technical facility with soft, professional cool-toned lighting. The image emphasizes high-tech equipment and professional focus, with a color palette of navy blue, silver, and bright clinical white." src="/assets/img/stitch/image2.jpg"/>
+<div class="bg-primary p-8 rounded-lg flex flex-col justify-center text-white">
+<p class="font-headline-xl text-headline-xl mb-2">15+</p>
+<p class="font-label-md text-label-md uppercase tracking-widest opacity-80">AÃ±os de Experiencia</p>
+</div>
+<div class="bg-surface-container-highest p-8 rounded-lg flex flex-col justify-center">
+<p class="font-headline-xl text-headline-xl text-primary mb-2">5k+</p>
+<p class="font-label-md text-label-md uppercase tracking-widest text-on-surface-variant">Equipos Reparados</p>
+</div>
+<img id="gallery-image-3" alt="Componentes tÃ©cnicos" class="rounded-lg shadow-lg w-full h-64 object-cover" data-alt="A macro shot of intricate high-end computer components and circuit paths, captured with cinematic shallow depth of field. The lighting is dramatic, highlighting golden traces and deep blue surfaces. The overall aesthetic is industrial-modern, reflecting advanced engineering and extreme precision, with a color scheme of deep midnight blue and metallic copper." src="/assets/img/stitch/image3.jpg"/>
+</div>
+</div>
+<div class="w-full lg:w-1/2 space-y-6">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Compromiso con la Excelencia TÃ©cnica</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">
+                        En TechSolutions, no solo reparamos equipos; garantizamos la continuidad de tu productividad. Nacimos de la necesidad de ofrecer un servicio tÃ©cnico que hable el lenguaje de la precisiÃ³n y la honestidad.
+                    </p>
+<ul class="space-y-4">
+<li class="flex items-start gap-4">
+<span class="material-symbols-outlined text-on-tertiary-container mt-1">check_circle</span>
+<p class="font-body-md text-body-md"><strong>DiagnÃ³stico Gratuito:</strong> Evaluamos tu equipo sin costo inicial bajo estÃ¡ndares internacionales.</p>
+</li>
+<li class="flex items-start gap-4">
+<span class="material-symbols-outlined text-on-tertiary-container mt-1">check_circle</span>
+<p class="font-body-md text-body-md"><strong>Transparencia:</strong> Reportes tÃ©cnicos detallados y desgloses de presupuestos sin cargos ocultos.</p>
+</li>
+<li class="flex items-start gap-4">
+<span class="material-symbols-outlined text-on-tertiary-container mt-1">check_circle</span>
+<p class="font-body-md text-body-md"><strong>Personal Certificado:</strong> Ingenieros y tÃ©cnicos especializados en las principales marcas del mercado.</p>
+</li>
+</ul>
+</div>
+</div>
+</section>
+<!-- Section 4: Testimonios -->
+<section class="py-20 bg-surface-container-low" id="testimonios">
+<div class="px-margin-desktop max-w-container-max mx-auto">
+<div class="flex flex-col md:flex-row justify-between items-end gap-8 mb-16">
+<div class="max-w-xl">
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-4">Lo que dicen nuestros clientes</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">La confianza se gana con cada tornillo ajustado y cada sistema recuperado.</p>
+</div>
+<div class="flex gap-2">
+<button class="w-12 h-12 rounded-full border border-outline-variant flex items-center justify-center hover:bg-white transition-colors"><span class="material-symbols-outlined">chevron_left</span></button>
+<button class="w-12 h-12 rounded-full border border-outline-variant flex items-center justify-center hover:bg-white transition-colors"><span class="material-symbols-outlined">chevron_right</span></button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Testimonial 1 -->
+<div class="bg-white p-8 rounded-xl shadow-sm border border-outline-variant flex flex-col gap-6">
+<div class="flex text-on-tertiary-container">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<p class="italic text-on-surface-variant font-body-md">"IncreÃ­ble rapidez. Mi estaciÃ³n de trabajo fallÃ³ en medio de un proyecto y lo solucionaron en menos de 24 horas. Â¡Profesionales de verdad!"</p>
+<div class="flex items-center gap-4 mt-4">
+<div class="w-12 h-12 rounded-full bg-surface-dim"></div>
+<div>
+<p class="font-button text-button text-on-surface">Carlos Mendoza</p>
+<p class="font-label-md text-label-md text-on-surface-variant">Arquitecto Freelance</p>
+</div>
+</div>
+</div>
+<!-- Testimonial 2 -->
+<div class="bg-white p-8 rounded-xl shadow-sm border border-outline-variant flex flex-col gap-6">
+<div class="flex text-on-tertiary-container">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<p class="italic text-on-surface-variant font-body-md">"El mantenimiento preventivo que realizaron a nuestros servidores evitÃ³ un desastre mayor. Un servicio impecable y transparente."</p>
+<div class="flex items-center gap-4 mt-4">
+<div class="w-12 h-12 rounded-full bg-surface-dim"></div>
+<div>
+<p class="font-button text-button text-on-surface">Elena Rivas</p>
+<p class="font-label-md text-label-md text-on-surface-variant">CTO, Grupo Innova</p>
+</div>
+</div>
+</div>
+<!-- Testimonial 3 -->
+<div class="bg-white p-8 rounded-xl shadow-sm border border-outline-variant flex flex-col gap-6">
+<div class="flex text-on-tertiary-container">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">star_half</span>
+</div>
+<p class="italic text-on-surface-variant font-body-md">"Excelente atenciÃ³n al cliente. Me explicaron paso a paso el problema de mi portÃ¡til y el precio fue muy justo. Altamente recomendados."</p>
+<div class="flex items-center gap-4 mt-4">
+<div class="w-12 h-12 rounded-full bg-surface-dim"></div>
+<div>
+<p class="font-button text-button text-on-surface">Marcos Silva</p>
+<p class="font-label-md text-label-md text-on-surface-variant">Estudiante de DiseÃ±o</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Section 5: Contacto -->
+<section class="py-20 bg-background" id="contacto">
+<div class="px-margin-desktop max-w-container-max mx-auto">
+<div class="bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col lg:flex-row">
+<!-- Form Side -->
+<div class="w-full lg:w-1/2 p-10 lg:p-16 border-r border-outline-variant">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-2">CuÃ©ntanos tu problema</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mb-10">Un experto se pondrÃ¡ en contacto contigo en menos de 2 horas hÃ¡biles.</p>
+<form class="space-y-6">
+<div class="space-y-2">
+<label class="font-label-md text-label-md text-primary uppercase">Nombre Completo</label>
+<input class="w-full px-4 py-3 rounded-lg border-outline-variant focus:ring-2 focus:ring-primary focus:border-transparent bg-background/50 outline-none transition-all" placeholder="Ej. Juan PÃ©rez" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="font-label-md text-label-md text-primary uppercase">Email</label>
+<input class="w-full px-4 py-3 rounded-lg border-outline-variant focus:ring-2 focus:ring-primary focus:border-transparent bg-background/50 outline-none transition-all" placeholder="juan@ejemplo.com" type="email"/>
+</div>
+<div class="space-y-2">
+<label class="font-label-md text-label-md text-primary uppercase">Mensaje</label>
+<textarea class="w-full px-4 py-3 rounded-lg border-outline-variant focus:ring-2 focus:ring-primary focus:border-transparent bg-background/50 outline-none transition-all resize-none" placeholder="Describe brevemente el fallo de tu equipo..." rows="4"></textarea>
+</div>
+<button class="w-full bg-primary text-white py-4 rounded-lg font-button text-button hover:bg-on-primary-fixed-variant transition-colors shadow-lg active:scale-95" type="submit">
+                                Enviar Solicitud
+                            </button>
+</form>
+</div>
+<!-- Info Side -->
+<div class="w-full lg:w-1/2 flex flex-col">
+<div id="map-media-wrapper" class="h-64 lg:h-1/2 relative">
+<img id="map-image" alt="UbicaciÃ³n de la oficina" class="w-full h-full object-cover grayscale contrast-125 opacity-80" data-alt="A stylized, architectural map background showing a city grid layout with a modern, technical aesthetic. The image uses a monochromatic blueprint style with clean white lines on a deep charcoal background, signifying a precise location in a metropolitan tech hub. The mood is sophisticated and corporate." data-location="Madrid" src="/assets/img/stitch/image4.jpg"/>
+<div class="absolute inset-0 bg-primary/20"></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="bg-white p-4 rounded-full shadow-2xl animate-bounce">
+<span class="material-symbols-outlined text-on-tertiary-container text-4xl" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+</div>
+</div>
+<div class="flex-grow p-10 lg:p-16 bg-surface-container-high space-y-8">
+<div class="flex items-start gap-6">
+<div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-white text-xl">map</span>
+</div>
+<div>
+<p class="font-headline-md text-headline-md text-primary mb-1">VisÃ­tanos</p>
+<p id="contact-address" class="font-body-md text-body-md text-on-surface-variant">Calle TecnologÃ­a 45, Distrito Industrial, C.P. 28001, Madrid</p>
+<p id="contact-phone" class="font-body-md text-body-md text-on-surface-variant mt-2"><strong>Teléfono:</strong> +595 981 000000</p>
+</div>
+</div>
+<div class="flex items-start gap-6">
+<div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-white text-xl">share</span>
+</div>
+<div>
+<p class="font-headline-md text-headline-md text-primary mb-4">SÃ­guenos</p>
+<div class="flex gap-4">
+<a class="w-10 h-10 rounded-lg border border-outline bg-white flex items-center justify-center hover:bg-tertiary-fixed-dim hover:text-on-tertiary-fixed transition-all" href="#"><span class="material-symbols-outlined">public</span></a>
+<a class="w-10 h-10 rounded-lg border border-outline bg-white flex items-center justify-center hover:bg-tertiary-fixed-dim hover:text-on-tertiary-fixed transition-all" href="#"><span class="material-symbols-outlined">contact_page</span></a>
+<a class="w-10 h-10 rounded-lg border border-outline bg-white flex items-center justify-center hover:bg-tertiary-fixed-dim hover:text-on-tertiary-fixed transition-all" href="#"><span class="material-symbols-outlined">video_library</span></a>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-primary dark:bg-surface-container-lowest text-on-primary dark:text-on-surface w-full py-12 border-t border-outline-variant dark:border-outline-variant">
+<div class="flex flex-col md:flex-row justify-between items-start px-margin-desktop max-w-container-max mx-auto gap-gutter">
+<div class="space-y-4 max-w-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary-fixed-dim">settings_suggest</span>
+<h2 class="font-headline-md text-headline-md text-on-primary dark:text-on-surface font-bold">TECHSOLUTIONS</h2>
+</div>
+<p class="opacity-70 font-body-md">Su socio de confianza para servicios tÃ©cnicos crÃ­ticos. Expertos en reparaciones complejas y optimizaciÃ³n de sistemas.</p>
+</div>
+<div class="flex flex-col gap-4">
+<p class="font-label-md text-label-md text-tertiary-fixed-dim uppercase tracking-widest">Legal</p>
+<div class="flex flex-col gap-2">
+<a class="text-on-primary-container dark:text-on-surface-variant font-medium hover:text-on-primary dark:hover:text-primary transition-opacity opacity-80 hover:opacity-100" href="#">Privacidad</a>
+<a class="text-on-primary-container dark:text-on-surface-variant font-medium hover:text-on-primary dark:hover:text-primary transition-opacity opacity-80 hover:opacity-100" href="#">TÃ©rminos de Servicio</a>
+<a class="text-on-primary-container dark:text-on-surface-variant font-medium hover:text-on-primary dark:hover:text-primary transition-opacity opacity-80 hover:opacity-100" href="/panel">Panel Cliente</a>
+</div>
+</div>
+<div class="w-full md:w-auto pt-8 md:pt-0 border-t md:border-t-0 border-outline-variant/30">
+<p class="font-body-md text-body-md opacity-60">Â© 2024 TechSolutions Servicio TÃ©cnico Profesional. Todos los derechos reservados.</p>
+</div>
+</div>
+</footer>
+<script>
+        function toggleDrawer() {
+            const drawer = document.getElementById('nav-drawer');
+            const overlay = document.getElementById('drawer-overlay');
+            const isOpen = !drawer.classList.contains('translate-x-full');
+            
+            if (isOpen) {
+                drawer.classList.add('translate-x-full');
+                overlay.classList.add('hidden');
+                overlay.classList.remove('opacity-100');
+                document.body.classList.remove('overflow-hidden');
+            } else {
+                drawer.classList.remove('translate-x-full');
+                overlay.classList.remove('hidden');
+                setTimeout(() => overlay.classList.add('opacity-100'), 10);
+                document.body.classList.add('overflow-hidden');
+            }
+        }
+
+        // Header effect on scroll
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 20) {
+                header.classList.add('h-16', 'shadow-md');
+                header.classList.remove('h-20', 'shadow-sm');
+            } else {
+                header.classList.add('h-20', 'shadow-sm');
+                header.classList.remove('h-16', 'shadow-md');
+            }
+        });
+    </script>
+
+<script is:inline>
+  (async () => {
+    const baseUrl = (window.POCKETBASE_URL || localStorage.getItem("pb_url") || "").replace(/\/$/, "");
+    if (!baseUrl) return;
+
+    const setText = (id, value) => {
+      if (!value) return;
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    };
+    const mapImageUrl = (base, collection, recordId, filename) => {
+      if (!filename || !recordId) return "";
+      return `${base}/api/files/${collection}/${recordId}/${filename}`;
+    };
+
+    try {
+      const settingsRes = await fetch(`${baseUrl}/api/collections/site_settings/records?page=1&perPage=1&sort=-created`);
+      if (settingsRes.ok) {
+        const settingsJson = await settingsRes.json();
+        const settings = settingsJson?.items?.[0];
+        if (settings) {
+          setText("hero-title", settings.hero_title);
+          setText("hero-subtitle", settings.hero_subtitle);
+          setText("contact-address", settings.address);
+          if (settings.phone) {
+            setText("contact-phone", `Teléfono: ${settings.phone}`);
+          }
+
+          const cta = document.getElementById("cta-primary");
+          if (cta && settings.whatsapp_url) cta.setAttribute("href", settings.whatsapp_url);
+        }
+      }
+    } catch (_) {
+      // Keep static fallback content when PocketBase is unreachable.
+    }
+
+    try {
+      const servicesRes = await fetch(`${baseUrl}/api/collections/services/records?page=1&perPage=12&sort=order&filter=is_active=true`);
+      if (servicesRes.ok) {
+        const servicesJson = await servicesRes.json();
+        const items = servicesJson?.items || [];
+        const grid = document.getElementById("services-grid");
+        if (grid && items.length) {
+          const cardClass = "group bg-white p-8 rounded-xl border border-outline-variant hover:border-tertiary-fixed-dim hover:shadow-xl transition-all duration-300 flex flex-col items-start gap-6";
+          grid.innerHTML = "";
+
+          items.forEach((service, index) => {
+            const card = document.createElement("div");
+            card.className = index === 1
+              ? "group bg-primary text-white p-8 rounded-xl shadow-xl flex flex-col items-start gap-6 hover:scale-[1.02] transition-transform"
+              : cardClass;
+
+            const iconWrap = document.createElement("div");
+            iconWrap.className = index === 1
+              ? "w-14 h-14 bg-primary-container rounded-lg flex items-center justify-center"
+              : "w-14 h-14 bg-surface-container-low rounded-lg flex items-center justify-center group-hover:bg-tertiary-fixed-dim transition-colors";
+
+            const icon = document.createElement("span");
+            icon.className = index === 1
+              ? "material-symbols-outlined text-tertiary-fixed-dim"
+              : "material-symbols-outlined text-primary group-hover:text-on-tertiary-fixed";
+            icon.textContent = service.icon || "build";
+            iconWrap.appendChild(icon);
+
+            const title = document.createElement("h3");
+            title.className = "font-headline-md text-headline-md" + (index === 1 ? "" : " text-on-surface");
+            title.textContent = service.title || "Servicio";
+
+            const desc = document.createElement("p");
+            desc.className = index === 1
+              ? "font-body-md text-body-md text-on-primary-container"
+              : "font-body-md text-body-md text-on-surface-variant";
+            desc.textContent = service.description || "";
+
+            const more = document.createElement("div");
+            more.className = index === 1
+              ? "mt-auto pt-4 flex items-center text-tertiary-fixed-dim font-button gap-2"
+              : "mt-auto pt-4 flex items-center text-primary font-button gap-2 group-hover:translate-x-2 transition-transform";
+            more.innerHTML = 'Saber más <span class="material-symbols-outlined">arrow_forward</span>';
+
+            card.appendChild(iconWrap);
+            card.appendChild(title);
+            card.appendChild(desc);
+            card.appendChild(more);
+            grid.appendChild(card);
+          });
+        }
+      }
+    } catch (_) {
+      // Keep static fallback cards.
+    }
+
+    try {
+      const galleryRes = await fetch(`${baseUrl}/api/collections/gallery/records?page=1&perPage=3&sort=order&filter=is_active=true`);
+      if (!galleryRes.ok) return;
+      const galleryJson = await galleryRes.json();
+      const gallery = galleryJson?.items || [];
+      const targets = ["gallery-image-1", "gallery-image-2", "gallery-image-3"];
+      const activeSorted = gallery
+        .filter((item) => item?.image)
+        .sort((a, b) => Number(a.order || 0) - Number(b.order || 0));
+
+      targets.forEach((targetId, idx) => {
+        const img = document.getElementById(targetId);
+        if (!img) return;
+        const item = activeSorted[idx];
+        const fallbackSrc = img.getAttribute("src");
+        const fallbackAlt = img.getAttribute("alt");
+
+        if (!item) {
+          // Keep template fallback when there are fewer active gallery records.
+          img.style.display = "";
+          if (fallbackSrc) img.setAttribute("src", fallbackSrc);
+          if (fallbackAlt) img.setAttribute("alt", fallbackAlt);
+          return;
+        }
+
+        const src = mapImageUrl(baseUrl, "gallery", item.id, item.image);
+        if (src) img.setAttribute("src", src);
+        if (item.title) img.setAttribute("alt", item.title);
+      });
+    } catch (_) {
+      // Keep static fallback gallery.
+    }
+  })();
+</script>
+
+</body></html>
