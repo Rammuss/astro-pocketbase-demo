@@ -34,7 +34,13 @@ async function pb(path, { method = "GET", token, body } = {}) {
     headers,
     body: body ? JSON.stringify(body) : undefined
   });
-  const json = await res.json().catch(() => ({}));
+  const raw = await res.text();
+  let json = {};
+  try {
+    json = raw ? JSON.parse(raw) : {};
+  } catch {
+    json = { raw };
+  }
   if (!res.ok) {
     throw new Error(`${method} ${path} -> ${res.status} ${JSON.stringify(json)}`);
   }
@@ -83,7 +89,7 @@ async function upsertClientUser(token) {
 }
 
 async function upsertSiteSettings(token) {
-  const listed = await pb("/api/collections/site_settings/records?perPage=1&sort=-updated", {
+  const listed = await pb("/api/collections/site_settings/records?perPage=1", {
     token
   });
   const payload = {
