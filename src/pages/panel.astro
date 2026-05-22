@@ -330,14 +330,13 @@
 
         <div class="card">
           <h2>Galería</h2>
-          <p class="muted">Gestioná imágenes del sitio. Podés cambiar imagen, orden y estado activo.</p>
+          <p class="muted">Gestioná imágenes del sitio en espacios fijos del diseño aprobado.</p>
           <div id="galleryList" class="gallery-grid"></div>
-          <div class="spacer"></div>
-          <button id="addGalleryBtn" class="btn ghost" type="button">Agregar imagen</button>
           <div class="spacer"></div>
           <button id="saveGalleryBtn" class="btn primary" type="button">Guardar galería</button>
           <div id="galleryMsg" class="msg"></div>
           <div id="galleryLastSaved" class="field-note"></div>
+          <div class="field-note">No se pueden agregar nuevas imágenes en este plan; solo reemplazar las existentes.</div>
         </div>
 
         <div class="spacer"></div>
@@ -589,7 +588,7 @@
           if (!state.gallery.length) {
             const empty = document.createElement("div");
             empty.className = "field-note";
-            empty.textContent = "Todavía no hay imágenes. Usá \"Agregar imagen\" para cargar la primera.";
+            empty.textContent = "No hay imágenes configuradas. Cargalas una vez desde admin para habilitar reemplazo en este panel.";
             galleryList.appendChild(empty);
             return;
           }
@@ -708,19 +707,6 @@
           updateProgress();
         }
 
-        function addGalleryItem() {
-          state.gallery.push({
-            id: "",
-            order: state.gallery.length + 1,
-            is_active: true,
-            image: "",
-            _newFile: null
-          });
-          renderGallery();
-          markDirty();
-          updateProgress();
-        }
-
         function updateProgress() {
           const hasHero = !!document.getElementById("heroTitle")?.value?.trim();
           const hasContact = !!document.getElementById("phone")?.value?.trim() || !!document.getElementById("address")?.value?.trim();
@@ -814,33 +800,10 @@
 
         async function saveGallery() {
           setSaving("saveGalleryBtn", true);
-          setSaving("addGalleryBtn", true);
           setMsg(galleryMsg, "");
           for (const img of state.gallery) {
             const hasNewFile = !!img._newFile;
-            if (!img.id) {
-              if (!hasNewFile) {
-                setMsg(galleryMsg, "Las imágenes nuevas requieren archivo.");
-                setSaving("saveGalleryBtn", false);
-                setSaving("addGalleryBtn", false);
-                return;
-              }
-              const form = new FormData();
-              form.append("order", String(Number(img.order || 0)));
-              form.append("is_active", String(!!img.is_active));
-              form.append("image", img._newFile);
-              const res = await fetch(`${pbUrl}/api/collections/gallery/records`, {
-                method: "POST",
-                headers: { Authorization: `Bearer ${state.token}` },
-                body: form
-              });
-              if (!res.ok) {
-                setMsg(galleryMsg, `Error creando imagen nueva (${res.status}).`);
-                setSaving("saveGalleryBtn", false);
-                setSaving("addGalleryBtn", false);
-                return;
-              }
-            } else if (hasNewFile) {
+            if (hasNewFile) {
               const form = new FormData();
               form.append("order", String(Number(img.order || 0)));
               form.append("is_active", String(!!img.is_active));
@@ -853,7 +816,6 @@
               if (!res.ok) {
                 setMsg(galleryMsg, `Error guardando imagen ${img.id} (${res.status}).`);
                 setSaving("saveGalleryBtn", false);
-                setSaving("addGalleryBtn", false);
                 return;
               }
             } else {
@@ -869,7 +831,6 @@
               if (!res.ok) {
                 setMsg(galleryMsg, `Error guardando imagen ${img.id} (${res.status}).`);
                 setSaving("saveGalleryBtn", false);
-                setSaving("addGalleryBtn", false);
                 return;
               }
             }
@@ -880,7 +841,6 @@
           markSaved();
           updateProgress();
           setSaving("saveGalleryBtn", false);
-          setSaving("addGalleryBtn", false);
         }
 
         async function changePassword() {
@@ -953,7 +913,6 @@
         document.getElementById("saveGalleryBtn").addEventListener("click", () => {
           saveGallery().catch(() => setMsg(galleryMsg, "Error al guardar galería."));
         });
-        document.getElementById("addGalleryBtn").addEventListener("click", addGalleryItem);
         document.getElementById("changePasswordBtn").addEventListener("click", () => {
           changePassword().catch(() => setMsg(passwordMsg, "Error cambiando contraseña."));
         });
