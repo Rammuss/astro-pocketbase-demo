@@ -117,15 +117,6 @@
         align-items: center;
         gap: 8px;
       }
-      .mini-btn {
-        border: 1px solid #cdd8e8;
-        background: #fff;
-        border-radius: 8px;
-        padding: 4px 8px;
-        cursor: pointer;
-        font-weight: 700;
-      }
-      .mini-btn:hover { background: #f1f6ff; }
       .pill {
         font-size: 12px;
         font-weight: 700;
@@ -261,9 +252,9 @@
         <div class="card">
           <h2 class="section-title">Progreso de configuración</h2>
           <div class="steps">
-            <div class="step"><div class="k">Paso 1</div><div class="v">Portada y contacto</div></div>
+            <div class="step"><div class="k">Paso 1</div><div class="v">Inicio (Hero y contacto)</div></div>
             <div class="step"><div class="k">Paso 2</div><div class="v">Servicios</div></div>
-            <div class="step"><div class="k">Paso 3</div><div class="v">Galería</div></div>
+            <div class="step"><div class="k">Paso 3</div><div class="v">Nosotros (Imágenes)</div></div>
           </div>
           <div class="progress"><div id="progressBar" style="width: 0%"></div></div>
           <div id="progressText" class="field-note" style="margin-top:8px;">Completado: 0%</div>
@@ -273,7 +264,7 @@
 
         <div class="card">
           <div class="topbar">
-            <h2>Configuración principal</h2>
+            <h2>Inicio (Hero y contacto)</h2>
             <div class="row">
               <span id="sessionInfo" class="status"></span>
               <a id="viewSiteBtn" class="btn ghost" href="/" target="_blank" rel="noopener noreferrer">Ver web</a>
@@ -318,7 +309,7 @@
         <div class="spacer"></div>
 
         <div class="card">
-          <h2>Servicios</h2>
+          <h2>Servicios (Sección Servicios)</h2>
           <p class="muted">Editá los textos y activá/desactivá servicios.</p>
           <div id="servicesList"></div>
           <button id="saveServicesBtn" class="btn primary" type="button">Guardar servicios</button>
@@ -329,7 +320,7 @@
         <div class="spacer"></div>
 
         <div class="card">
-          <h2>Galería</h2>
+          <h2>Nosotros (Imágenes de la web)</h2>
           <p class="muted">Gestioná imágenes del sitio en espacios fijos del diseño aprobado.</p>
           <div id="galleryList" class="gallery-grid"></div>
           <div class="spacer"></div>
@@ -545,8 +536,6 @@
               <div class="service-head">
                 <div class="left">
                   <strong>Servicio ${idx + 1}</strong>
-                  <button class="mini-btn" type="button" data-action="svc-up" data-i="${idx}" title="Subir">↑</button>
-                  <button class="mini-btn" type="button" data-action="svc-down" data-i="${idx}" title="Bajar">↓</button>
                 </div>
                 <span class="pill ${active ? "ok" : ""}">${active ? "Activo" : "Inactivo"}</span>
               </div>
@@ -572,9 +561,6 @@
           servicesList.querySelectorAll("input, textarea").forEach((el) => {
             el.addEventListener("input", onServiceInput);
             el.addEventListener("change", onServiceInput);
-          });
-          servicesList.querySelectorAll("button[data-action]").forEach((btn) => {
-            btn.addEventListener("click", onServiceMove);
           });
         }
 
@@ -618,8 +604,6 @@
               <div class="service-head" style="margin-bottom:8px;">
                 <div class="left">
                   <strong>${slotLabel}</strong>
-                  <button class="mini-btn" type="button" data-action="gal-up" data-gi="${idx}" title="Subir">↑</button>
-                  <button class="mini-btn" type="button" data-action="gal-down" data-gi="${idx}" title="Bajar">↓</button>
                 </div>
                 <span class="pill ${img.is_active ? "ok" : ""}">${img.is_active ? "Activa" : "Inactiva"}</span>
               </div>
@@ -635,7 +619,7 @@
               <div class="spacer"></div>
               <label>Cambiar imagen</label>
               <input data-gk="image_file" data-gi="${idx}" type="file" accept="image/*" />
-              <div class="field-note">${img.id ? "Si no elegís archivo, mantiene la imagen actual." : "Elegí un archivo para crear esta imagen."}</div>
+              <div class="field-note">Si no elegís archivo, mantiene la imagen actual.</div>
             `;
             galleryList.appendChild(item);
           });
@@ -643,9 +627,6 @@
           galleryList.querySelectorAll("input").forEach((el) => {
             el.addEventListener("input", onGalleryInput);
             el.addEventListener("change", onGalleryInput);
-          });
-          galleryList.querySelectorAll("button[data-action]").forEach((btn) => {
-            btn.addEventListener("click", onGalleryMove);
           });
         }
 
@@ -660,19 +641,6 @@
           } else {
             state.services[i][k] = e.target.value;
           }
-          markDirty();
-          updateProgress();
-        }
-
-        function onServiceMove(e) {
-          const i = Number(e.currentTarget.dataset.i);
-          const action = e.currentTarget.dataset.action;
-          if (!Number.isInteger(i)) return;
-          const j = action === "svc-up" ? i - 1 : i + 1;
-          if (j < 0 || j >= state.services.length) return;
-          [state.services[i], state.services[j]] = [state.services[j], state.services[i]];
-          state.services.forEach((s, idx) => { s.order = idx + 1; });
-          renderServices();
           markDirty();
           updateProgress();
         }
@@ -699,19 +667,6 @@
             const file = e.target.files?.[0];
             state.gallery[i]._newFile = file || null;
           }
-          markDirty();
-          updateProgress();
-        }
-
-        function onGalleryMove(e) {
-          const i = Number(e.currentTarget.dataset.gi);
-          const action = e.currentTarget.dataset.action;
-          if (!Number.isInteger(i)) return;
-          const j = action === "gal-up" ? i - 1 : i + 1;
-          if (j < 0 || j >= state.gallery.length) return;
-          [state.gallery[i], state.gallery[j]] = [state.gallery[j], state.gallery[i]];
-          state.gallery.forEach((g, idx) => { g.order = idx + 1; });
-          renderGallery();
           markDirty();
           updateProgress();
         }
