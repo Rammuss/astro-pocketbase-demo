@@ -583,6 +583,22 @@
           return `${pbUrl}/api/files/gallery/${record.id}/${record.image}`;
         }
 
+        function gallerySlotLabel(order, idx) {
+          const n = Number(order || idx + 1);
+          if (n === 1) return "Imagen principal (Hero)";
+          if (n === 2) return "Imagen secundaria (Sección Nosotros)";
+          if (n === 3) return "Imagen de apoyo (Sección Servicios)";
+          return `Imagen adicional ${n}`;
+        }
+
+        function gallerySlotHint(order, idx) {
+          const n = Number(order || idx + 1);
+          if (n === 1) return "Se muestra en el bloque principal, lado derecho.";
+          if (n === 2) return "Se muestra en el bloque visual secundario.";
+          if (n === 3) return "Se muestra en bloques de apoyo visual.";
+          return "Se muestra en una sección visual adicional del sitio.";
+        }
+
         function renderGallery() {
           galleryList.innerHTML = "";
           if (!state.gallery.length) {
@@ -596,15 +612,19 @@
             const item = document.createElement("div");
             item.className = "gallery-item";
             const imgSrc = mapImageUrl(img);
+            const slotLabel = gallerySlotLabel(img.order, idx);
+            const slotHint = gallerySlotHint(img.order, idx);
             item.innerHTML = `
               <div class="service-head" style="margin-bottom:8px;">
                 <div class="left">
-                  <strong>Imagen ${idx + 1}</strong>
+                  <strong>${slotLabel}</strong>
                   <button class="mini-btn" type="button" data-action="gal-up" data-gi="${idx}" title="Subir">↑</button>
                   <button class="mini-btn" type="button" data-action="gal-down" data-gi="${idx}" title="Bajar">↓</button>
                 </div>
                 <span class="pill ${img.is_active ? "ok" : ""}">${img.is_active ? "Activa" : "Inactiva"}</span>
               </div>
+              <div class="field-note">${slotHint}</div>
+              <div class="spacer"></div>
               <img class="thumb" src="${imgSrc || ""}" alt="Imagen" style="${imgSrc ? "" : "display:none;"}" />
               <div class="field-note" style="${imgSrc ? "display:none;" : ""}">Sin imagen cargada todavía.</div>
               <div class="spacer"></div>
