@@ -515,7 +515,7 @@
         }
 
         async function loadSettings() {
-          const res = await fetch(`${pbUrl}/api/collections/site_settings/records?page=1&perPage=1&sort=-created`, {
+          const res = await fetch(`${pbUrl}/api/collections/site_settings/records?page=1&perPage=1`, {
             headers: authHeaders()
           });
           if (!res.ok) throw new Error("No se pudo leer site_settings.");
