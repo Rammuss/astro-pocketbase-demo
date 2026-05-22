@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "seed:prod": "node scripts/seed-production.mjs"
   },
   "dependencies": {
     "astro": "^5.10.0"
