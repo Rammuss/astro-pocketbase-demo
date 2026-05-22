@@ -300,6 +300,10 @@
             <div id="heroSubtitleCounter" class="counter">0/220</div>
           </div>
           <div class="spacer"></div>
+          <h2 style="margin:0 0 6px;">Imagen principal (Hero)</h2>
+          <p class="muted" style="margin:0 0 8px;">Esta imagen se muestra en el bloque principal, lado derecho.</p>
+          <div id="heroGalleryList" class="gallery-grid"></div>
+          <div class="spacer"></div>
           <button id="saveSettingsBtn" class="btn primary" type="button">Guardar portada y contacto</button>
           <div id="settingsMsg" class="msg"></div>
           <div id="settingsLastSaved" class="field-note"></div>
@@ -374,6 +378,7 @@
         const servicesLastSaved = document.getElementById("servicesLastSaved");
         const galleryLastSaved = document.getElementById("galleryLastSaved");
         const servicesList = document.getElementById("servicesList");
+        const heroGalleryList = document.getElementById("heroGalleryList");
         const galleryList = document.getElementById("galleryList");
         const sessionInfo = document.getElementById("sessionInfo");
         const heroTitleCounter = document.getElementById("heroTitleCounter");
@@ -571,7 +576,6 @@
 
         function gallerySlotLabel(order, idx) {
           const n = Number(order || idx + 1);
-          if (n === 1) return "Imagen principal (Hero)";
           if (n === 2) return "Imagen secundaria (Sección Nosotros)";
           if (n === 3) return "Imagen de apoyo (Sección Servicios)";
           return `Imagen adicional ${n}`;
@@ -579,13 +583,41 @@
 
         function gallerySlotHint(order, idx) {
           const n = Number(order || idx + 1);
-          if (n === 1) return "Se muestra en el bloque principal, lado derecho.";
           if (n === 2) return "Se muestra en el bloque visual secundario.";
           if (n === 3) return "Se muestra en bloques de apoyo visual.";
           return "Se muestra en una sección visual adicional del sitio.";
         }
 
+        function buildGalleryCard(img, idx, slotLabel, slotHint) {
+          const item = document.createElement("div");
+          item.className = "gallery-item";
+          const imgSrc = mapImageUrl(img);
+          item.innerHTML = `
+            <div class="service-head" style="margin-bottom:8px;">
+              <div class="left">
+                <strong>${slotLabel}</strong>
+              </div>
+              <span class="pill ${img.is_active ? "ok" : ""}">${img.is_active ? "Activa" : "Inactiva"}</span>
+            </div>
+            <div class="field-note">${slotHint}</div>
+            <div class="spacer"></div>
+            <img class="thumb" src="${imgSrc || ""}" alt="Imagen" style="${imgSrc ? "" : "display:none;"}" />
+            <div class="field-note" style="${imgSrc ? "display:none;" : ""}">Sin imagen cargada todavía.</div>
+            <div class="spacer"></div>
+            <label>Orden</label>
+            <input data-gk="order" data-gi="${idx}" type="number" value="${Number(img.order || 0)}" />
+            <div class="spacer"></div>
+            <label class="chk-row"><input data-gk="is_active" data-gi="${idx}" type="checkbox" ${img.is_active ? "checked" : ""} /> Activo</label>
+            <div class="spacer"></div>
+            <label>Cambiar imagen</label>
+            <input data-gk="image_file" data-gi="${idx}" type="file" accept="image/*" />
+            <div class="field-note">Si no elegís archivo, mantiene la imagen actual.</div>
+          `;
+          return item;
+        }
+
         function renderGallery() {
+          heroGalleryList.innerHTML = "";
           galleryList.innerHTML = "";
           if (!state.gallery.length) {
             const empty = document.createElement("div");
@@ -594,37 +626,30 @@
             galleryList.appendChild(empty);
             return;
           }
+          const heroIdx = state.gallery.findIndex((g) => Number(g.order || 0) === 1);
+          const resolvedHeroIdx = heroIdx >= 0 ? heroIdx : 0;
+          const hero = state.gallery[resolvedHeroIdx];
+          if (hero) {
+            heroGalleryList.appendChild(
+              buildGalleryCard(hero, resolvedHeroIdx, "Imagen principal (Hero)", "Se muestra en el bloque principal, lado derecho.")
+            );
+          }
+
           state.gallery.forEach((img, idx) => {
-            const item = document.createElement("div");
-            item.className = "gallery-item";
-            const imgSrc = mapImageUrl(img);
+            if (idx === resolvedHeroIdx) return;
             const slotLabel = gallerySlotLabel(img.order, idx);
             const slotHint = gallerySlotHint(img.order, idx);
-            item.innerHTML = `
-              <div class="service-head" style="margin-bottom:8px;">
-                <div class="left">
-                  <strong>${slotLabel}</strong>
-                </div>
-                <span class="pill ${img.is_active ? "ok" : ""}">${img.is_active ? "Activa" : "Inactiva"}</span>
-              </div>
-              <div class="field-note">${slotHint}</div>
-              <div class="spacer"></div>
-              <img class="thumb" src="${imgSrc || ""}" alt="Imagen" style="${imgSrc ? "" : "display:none;"}" />
-              <div class="field-note" style="${imgSrc ? "display:none;" : ""}">Sin imagen cargada todavía.</div>
-              <div class="spacer"></div>
-              <label>Orden</label>
-              <input data-gk="order" data-gi="${idx}" type="number" value="${Number(img.order || 0)}" />
-              <div class="spacer"></div>
-              <label class="chk-row"><input data-gk="is_active" data-gi="${idx}" type="checkbox" ${img.is_active ? "checked" : ""} /> Activo</label>
-              <div class="spacer"></div>
-              <label>Cambiar imagen</label>
-              <input data-gk="image_file" data-gi="${idx}" type="file" accept="image/*" />
-              <div class="field-note">Si no elegís archivo, mantiene la imagen actual.</div>
-            `;
-            galleryList.appendChild(item);
+            galleryList.appendChild(buildGalleryCard(img, idx, slotLabel, slotHint));
           });
 
-          galleryList.querySelectorAll("input").forEach((el) => {
+          if (!galleryList.children.length) {
+            const onlyHero = document.createElement("div");
+            onlyHero.className = "field-note";
+            onlyHero.textContent = "No hay más imágenes de sección configuradas.";
+            galleryList.appendChild(onlyHero);
+          }
+
+          document.querySelectorAll("#heroGalleryList input, #galleryList input").forEach((el) => {
             el.addEventListener("input", onGalleryInput);
             el.addEventListener("change", onGalleryInput);
           });
