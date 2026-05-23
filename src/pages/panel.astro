@@ -273,6 +273,11 @@
               <input id="address" type="text" maxlength="120" />
               <div id="addressCounter" class="counter">0/120</div>
             </div>
+            <div>
+              <label for="mapsUrl">Google Maps URL</label>
+              <input id="mapsUrl" type="url" placeholder="https://maps.app.goo.gl/..." />
+              <div id="mapsUrlNote" class="field-note">Pegá el link compartido de Google Maps.</div>
+            </div>
           </div>
           <div class="spacer"></div>
           <div>
@@ -374,6 +379,7 @@
           userEmail: "",
           userId: "",
           siteSettingsId: "",
+          hasMapsField: false,
           services: [],
           gallery: []
         };
@@ -401,6 +407,22 @@
         function sanitizeText(v, maxLen = 255) {
           const clean = (v || "").replace(/<[^>]*>/g, "").trim();
           return clean.slice(0, maxLen);
+        }
+
+        function isValidMapsUrl(raw) {
+          const value = (raw || "").trim();
+          if (!value) return true;
+          try {
+            const u = new URL(value);
+            const host = u.hostname.toLowerCase();
+            return (
+              host.includes("google.com") ||
+              host.includes("maps.app.goo.gl") ||
+              host.includes("goo.gl")
+            );
+          } catch (_) {
+            return false;
+          }
         }
 
         function updateCounters() {
@@ -505,6 +527,7 @@
           if (!s) throw new Error("No hay registro en site_settings.");
 
           state.siteSettingsId = s.id;
+          state.hasMapsField = Object.prototype.hasOwnProperty.call(s, "maps_url");
           document.getElementById("heroTitle").value = s.hero_title || "";
           document.getElementById("heroSubtitle").value = s.hero_subtitle || "";
           document.getElementById("phone").value = s.phone || "";
@@ -512,6 +535,18 @@
           const m = w.match(/wa\.me\/(\d+)/i);
           document.getElementById("whatsappNumber").value = m ? m[1] : "";
           document.getElementById("address").value = s.address || "";
+          const mapsInput = document.getElementById("mapsUrl");
+          const mapsNote = document.getElementById("mapsUrlNote");
+          if (state.hasMapsField) {
+            mapsInput.disabled = false;
+            mapsInput.value = s.maps_url || "";
+            if (mapsNote) mapsNote.textContent = "Pegá el link compartido de Google Maps.";
+          } else {
+            mapsInput.disabled = true;
+            mapsInput.value = "";
+            mapsInput.placeholder = "Falta campo maps_url en PocketBase";
+            if (mapsNote) mapsNote.textContent = "Este cliente todavía no tiene habilitado Google Maps en la base.";
+          }
           updateCounters();
         }
 
@@ -724,6 +759,9 @@
             whatsapp_url: "",
             address: sanitizeText(document.getElementById("address").value, 120)
           };
+          if (state.hasMapsField) {
+            body.maps_url = (document.getElementById("mapsUrl").value || "").trim();
+          }
           const rawWa = document.getElementById("whatsappNumber").value || "";
           const waDigits = rawWa.replace(/\D/g, "");
           if (waDigits) body.whatsapp_url = `https://wa.me/${waDigits}`;
@@ -734,6 +772,11 @@
           }
           if (rawWa && waDigits.length < 8) {
             setMsg(settingsMsg, "WhatsApp número parece inválido.");
+            setSaving("saveSettingsBtn", false);
+            return;
+          }
+          if (state.hasMapsField && !isValidMapsUrl(body.maps_url)) {
+            setMsg(settingsMsg, "Google Maps URL inválido. Usá un enlace de Google Maps.");
             setSaving("saveSettingsBtn", false);
             return;
           }
@@ -901,7 +944,7 @@
           changePassword().catch(() => setMsg(passwordMsg, "Error cambiando contraseña."));
         });
         document.getElementById("logoutBtn").addEventListener("click", logout);
-        ["heroTitle","heroSubtitle","phone","whatsappNumber","address"].forEach((id) => {
+        ["heroTitle","heroSubtitle","phone","whatsappNumber","address","mapsUrl"].forEach((id) => {
           const el = document.getElementById(id);
           if (!el) return;
           el.addEventListener("input", () => {

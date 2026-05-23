@@ -10,7 +10,8 @@ const config = {
     "Soluciones rapidas y garantizadas para tus equipos y dispositivos.",
   phone: process.env.SITE_PHONE || "0981236300",
   whatsappUrl: process.env.SITE_WHATSAPP_URL || "https://wa.me/595981236300",
-  address: process.env.SITE_ADDRESS || "Asuncion, Paraguay"
+  address: process.env.SITE_ADDRESS || "Asuncion, Paraguay",
+  mapsUrl: process.env.SITE_MAPS_URL || ""
 };
 
 for (const [key, value] of Object.entries({
@@ -92,28 +93,51 @@ async function upsertSiteSettings(token) {
   const listed = await pb("/api/collections/site_settings/records?perPage=1", {
     token
   });
-  const payload = {
+  const payloadBase = {
     hero_title: config.siteTitle,
     hero_subtitle: config.siteSubtitle,
     phone: config.phone,
     whatsapp_url: config.whatsappUrl,
     address: config.address
   };
+  const payloadWithMaps = {
+    ...payloadBase,
+    maps_url: config.mapsUrl
+  };
+  const save = async (body) => {
+    if (listed.items?.length) {
+      const id = listed.items[0].id;
+      await pb(`/api/collections/site_settings/records/${id}`, {
+        method: "PATCH",
+        token,
+        body
+      });
+      console.log("site_settings actualizado.");
+    } else {
+      await pb("/api/collections/site_settings/records", {
+        method: "POST",
+        token,
+        body
+      });
+      console.log("site_settings creado.");
+    }
+  };
   if (listed.items?.length) {
-    const id = listed.items[0].id;
-    await pb(`/api/collections/site_settings/records/${id}`, {
-      method: "PATCH",
-      token,
-      body: payload
-    });
-    console.log("site_settings actualizado.");
-  } else {
-    await pb("/api/collections/site_settings/records", {
-      method: "POST",
-      token,
-      body: payload
-    });
-    console.log("site_settings creado.");
+    try {
+      await save(payloadWithMaps);
+    } catch (err) {
+      if (!String(err.message || "").includes("maps_url")) throw err;
+      await save(payloadBase);
+      console.log("maps_url no existe en este esquema; se guardó sin mapa.");
+    }
+    return;
+  }
+  try {
+    await save(payloadWithMaps);
+  } catch (err) {
+    if (!String(err.message || "").includes("maps_url")) throw err;
+    await save(payloadBase);
+    console.log("maps_url no existe en este esquema; se guardó sin mapa.");
   }
 }
 

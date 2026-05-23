@@ -385,6 +385,7 @@
 <div class="w-full lg:w-1/2 flex flex-col">
 <div id="map-media-wrapper" class="h-64 lg:h-1/2 relative">
 <img id="map-image" alt="UbicaciÃ³n de la oficina" class="w-full h-full object-cover grayscale contrast-125 opacity-80" data-alt="A stylized, architectural map background showing a city grid layout with a modern, technical aesthetic. The image uses a monochromatic blueprint style with clean white lines on a deep charcoal background, signifying a precise location in a metropolitan tech hub. The mood is sophisticated and corporate." data-location="Madrid" src="/assets/img/stitch/image4.jpg"/>
+<iframe id="map-embed" class="hidden w-full h-full border-0" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Mapa de ubicación"></iframe>
 <div class="absolute inset-0 bg-primary/20"></div>
 <div class="absolute inset-0 flex items-center justify-center">
 <div class="bg-white p-4 rounded-full shadow-2xl animate-bounce">
@@ -401,6 +402,9 @@
 <p class="font-headline-md text-headline-md text-primary mb-1">VisÃ­tanos</p>
 <p id="contact-address" class="font-body-md text-body-md text-on-surface-variant">Calle TecnologÃ­a 45, Distrito Industrial, C.P. 28001, Madrid</p>
 <p id="contact-phone" class="font-body-md text-body-md text-on-surface-variant mt-2"><strong>Teléfono:</strong> +595 981 000000</p>
+<a id="contact-map-link" class="hidden mt-3 inline-flex items-center gap-2 text-primary font-button hover:underline" target="_blank" rel="noopener noreferrer">
+<span class="material-symbols-outlined text-base">map</span> Cómo llegar
+</a>
 </div>
 </div>
 <div class="flex items-start gap-6">
@@ -491,6 +495,24 @@
       if (!filename || !recordId) return "";
       return `${base}/api/files/${collection}/${recordId}/${filename}`;
     };
+    const getEmbedMapUrl = (mapsUrl, address) => {
+      const value = (mapsUrl || "").trim();
+      if (!value) return "";
+      try {
+        const u = new URL(value);
+        const host = u.hostname.toLowerCase();
+        const allowed = host.includes("google.com") || host.includes("maps.app.goo.gl") || host.includes("goo.gl");
+        if (!allowed) return "";
+        if (u.pathname.includes("/maps/embed")) return value;
+        const q = u.searchParams.get("q");
+        if (q) return `https://www.google.com/maps?q=${encodeURIComponent(q)}&output=embed`;
+        const query = (address || "").trim();
+        if (query) return `https://www.google.com/maps?q=${encodeURIComponent(query)}&output=embed`;
+        return "";
+      } catch (_) {
+        return "";
+      }
+    };
 
     try {
       const settingsRes = await fetch(`${baseUrl}/api/collections/site_settings/records?page=1&perPage=1&sort=-created`);
@@ -503,6 +525,19 @@
           setText("contact-address", settings.address);
           if (settings.phone) {
             setText("contact-phone", `Teléfono: ${settings.phone}`);
+          }
+          const mapLink = document.getElementById("contact-map-link");
+          const mapImage = document.getElementById("map-image");
+          const mapEmbed = document.getElementById("map-embed");
+          const mapEmbedUrl = getEmbedMapUrl(settings.maps_url, settings.address);
+          if (mapLink && settings.maps_url) {
+            mapLink.classList.remove("hidden");
+            mapLink.setAttribute("href", settings.maps_url);
+          }
+          if (mapEmbed && mapImage && mapEmbedUrl) {
+            mapEmbed.classList.remove("hidden");
+            mapEmbed.setAttribute("src", mapEmbedUrl);
+            mapImage.classList.add("hidden");
           }
 
           const cta = document.getElementById("cta-primary");
