@@ -363,7 +363,7 @@
 <div class="w-full lg:w-1/2 p-10 lg:p-16 border-r border-outline-variant">
 <h2 class="font-headline-lg text-headline-lg text-primary mb-2">Cuéntanos tu problema</h2>
 <p class="font-body-md text-body-md text-on-surface-variant mb-10">Un experto se pondrá en contacto contigo en menos de 2 horas hábiles.</p>
-<form class="space-y-6">
+<form id="lead-form" class="space-y-6">
 <div class="space-y-2">
 <label class="font-label-md text-label-md text-primary uppercase">Nombre Completo</label>
 <input class="w-full px-4 py-3 rounded-lg border-outline-variant focus:ring-2 focus:ring-primary focus:border-transparent bg-background/50 outline-none transition-all" placeholder="Ej. Juan Pérez" type="text"/>
@@ -526,6 +526,40 @@
       nos.appendChild(img);
       document.body.appendChild(nos);
     };
+    const trackMetaEvent = (eventName, params = {}) => {
+      if (!window.fbq || !eventName) return;
+      try {
+        window.fbq("track", eventName, params);
+      } catch (_) {
+        // no-op
+      }
+    };
+    const wireMetaEvents = () => {
+      const leadForm = document.getElementById("lead-form");
+      const mapLink = document.getElementById("contact-map-link");
+      const cta = document.getElementById("cta-primary");
+
+      if (leadForm && !leadForm.dataset.metaBound) {
+        leadForm.addEventListener("submit", () => {
+          trackMetaEvent("Lead", { source: "contact_form" });
+        });
+        leadForm.dataset.metaBound = "1";
+      }
+
+      if (mapLink && !mapLink.dataset.metaBound) {
+        mapLink.addEventListener("click", () => {
+          trackMetaEvent("Contact", { channel: "maps" });
+        });
+        mapLink.dataset.metaBound = "1";
+      }
+
+      if (cta && !cta.dataset.metaBound) {
+        cta.addEventListener("click", () => {
+          trackMetaEvent("Contact", { channel: "whatsapp_cta" });
+        });
+        cta.dataset.metaBound = "1";
+      }
+    };
     const revealMapWrapper = () => {
       const wrap = document.getElementById("map-media-wrapper");
       if (wrap) wrap.classList.remove("opacity-0");
@@ -594,6 +628,7 @@
           const cta = document.getElementById("cta-primary");
           if (cta && settings.whatsapp_url) cta.setAttribute("href", settings.whatsapp_url);
           setupMetaPixel(settings.meta_pixel_id, settings.meta_pixel_enabled);
+          wireMetaEvents();
         }
       }
     } catch (_) {
@@ -605,6 +640,7 @@
       if (mapOverlay) mapOverlay.classList.remove("hidden");
       if (mapPin) mapPin.classList.remove("hidden");
       revealMapWrapper();
+      wireMetaEvents();
     }
 
     try {
