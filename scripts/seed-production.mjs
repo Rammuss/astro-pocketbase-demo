@@ -11,7 +11,9 @@ const config = {
   phone: process.env.SITE_PHONE || "0981236300",
   whatsappUrl: process.env.SITE_WHATSAPP_URL || "https://wa.me/595981236300",
   address: process.env.SITE_ADDRESS || "Asuncion, Paraguay",
-  mapsUrl: process.env.SITE_MAPS_URL || ""
+  mapsUrl: process.env.SITE_MAPS_URL || "",
+  metaPixelId: process.env.META_PIXEL_ID || "",
+  metaPixelEnabled: process.env.META_PIXEL_ENABLED === "true"
 };
 
 for (const [key, value] of Object.entries({
@@ -102,7 +104,9 @@ async function upsertSiteSettings(token) {
   };
   const payloadWithMaps = {
     ...payloadBase,
-    maps_url: config.mapsUrl
+    maps_url: config.mapsUrl,
+    meta_pixel_id: config.metaPixelId,
+    meta_pixel_enabled: config.metaPixelEnabled
   };
   const save = async (body) => {
     if (listed.items?.length) {
@@ -126,18 +130,20 @@ async function upsertSiteSettings(token) {
     try {
       await save(payloadWithMaps);
     } catch (err) {
-      if (!String(err.message || "").includes("maps_url")) throw err;
+      const msg = String(err.message || "");
+      if (!msg.includes("maps_url") && !msg.includes("meta_pixel_id") && !msg.includes("meta_pixel_enabled")) throw err;
       await save(payloadBase);
-      console.log("maps_url no existe en este esquema; se guardó sin mapa.");
+      console.log("Faltan campos opcionales (maps/meta pixel) en este esquema; se guardó base.");
     }
     return;
   }
   try {
     await save(payloadWithMaps);
   } catch (err) {
-    if (!String(err.message || "").includes("maps_url")) throw err;
+    const msg = String(err.message || "");
+    if (!msg.includes("maps_url") && !msg.includes("meta_pixel_id") && !msg.includes("meta_pixel_enabled")) throw err;
     await save(payloadBase);
-    console.log("maps_url no existe en este esquema; se guardó sin mapa.");
+    console.log("Faltan campos opcionales (maps/meta pixel) en este esquema; se guardó base.");
   }
 }
 

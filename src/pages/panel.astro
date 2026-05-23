@@ -36,6 +36,7 @@
       .card.services-block { background: #effcf2; border-color: #a8dfb5; border-left: 6px solid #16a34a; }
       .card.about-block { background: #fff7ed; border-color: #f9c79e; border-left: 6px solid #ea580c; }
       .card.security-block { background: #f5f3ff; border-color: #cbc3ff; border-left: 6px solid #7c3aed; }
+      .card.marketing-block { background: #fff1f2; border-color: #fecdd3; border-left: 6px solid #e11d48; }
       h1 { margin: 0 0 16px; font-size: 24px; }
       h2 { margin: 0 0 12px; font-size: 18px; }
       .section-title {
@@ -52,6 +53,7 @@
       .section-title.services { background: #dcfce7; color: #15803d; }
       .section-title.about { background: #ffedd5; color: #c2410c; }
       .section-title.security { background: #ede9fe; color: #6d28d9; }
+      .section-title.marketing { background: #ffe4e6; color: #be123c; }
       .muted { color: var(--muted); }
       .grid { display: grid; gap: 12px; }
       .grid.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -341,8 +343,31 @@
 
         <div class="spacer"></div>
 
+        <div class="card marketing-block">
+          <div class="section-title marketing">SECCION 5</div>
+          <h2>Marketing (Meta Pixel)</h2>
+          <p class="muted">Activá el seguimiento de Meta Ads con tu Pixel ID.</p>
+          <div class="grid cols-2">
+            <div class="chk-row">
+              <input id="metaPixelEnabled" type="checkbox" />
+              <label for="metaPixelEnabled" style="margin:0;">Activar Meta Pixel</label>
+            </div>
+            <div>
+              <label for="metaPixelId">Meta Pixel ID</label>
+              <input id="metaPixelId" type="text" placeholder="123456789012345" />
+              <div id="metaPixelNote" class="field-note">Solo números (10 a 20 dígitos).</div>
+            </div>
+          </div>
+          <div class="spacer"></div>
+          <button id="saveSettingsBtnMarketing" class="btn primary" type="button">Guardar marketing</button>
+          <div id="settingsMarketingMsg" class="msg"></div>
+          <div id="settingsMarketingLastSaved" class="field-note"></div>
+        </div>
+
+        <div class="spacer"></div>
+
         <div class="card security-block">
-          <div class="section-title security">SECCION 5</div>
+          <div class="section-title security">SECCION 6</div>
           <h2>Seguridad</h2>
           <p class="muted">Cambiar contraseña del usuario actual.</p>
           <div class="grid cols-2">
@@ -378,11 +403,13 @@
         const forgotMsg = document.getElementById("forgotMsg");
         const settingsMsg = document.getElementById("settingsMsg");
         const settingsContactMsg = document.getElementById("settingsContactMsg");
+        const settingsMarketingMsg = document.getElementById("settingsMarketingMsg");
         const servicesMsg = document.getElementById("servicesMsg");
         const galleryMsg = document.getElementById("galleryMsg");
         const passwordMsg = document.getElementById("passwordMsg");
         const settingsLastSaved = document.getElementById("settingsLastSaved");
         const settingsContactLastSaved = document.getElementById("settingsContactLastSaved");
+        const settingsMarketingLastSaved = document.getElementById("settingsMarketingLastSaved");
         const servicesLastSaved = document.getElementById("servicesLastSaved");
         const galleryLastSaved = document.getElementById("galleryLastSaved");
         const servicesList = document.getElementById("servicesList");
@@ -399,6 +426,8 @@
           userId: "",
           siteSettingsId: "",
           hasMapsField: false,
+          hasMetaField: false,
+          hasMetaEnabledField: false,
           services: [],
           gallery: []
         };
@@ -442,6 +471,12 @@
           } catch (_) {
             return false;
           }
+        }
+
+        function isValidPixelId(raw) {
+          const value = (raw || "").trim();
+          if (!value) return true;
+          return /^\d{10,20}$/.test(value);
         }
 
         function updateCounters() {
@@ -547,6 +582,8 @@
 
           state.siteSettingsId = s.id;
           state.hasMapsField = Object.prototype.hasOwnProperty.call(s, "maps_url");
+          state.hasMetaField = Object.prototype.hasOwnProperty.call(s, "meta_pixel_id");
+          state.hasMetaEnabledField = Object.prototype.hasOwnProperty.call(s, "meta_pixel_enabled");
           document.getElementById("heroTitle").value = s.hero_title || "";
           document.getElementById("heroSubtitle").value = s.hero_subtitle || "";
           document.getElementById("phone").value = s.phone || "";
@@ -565,6 +602,23 @@
             mapsInput.value = "";
             mapsInput.placeholder = "Falta campo maps_url en PocketBase";
             if (mapsNote) mapsNote.textContent = "Este cliente todavía no tiene habilitado Google Maps en la base.";
+          }
+          const pixelInput = document.getElementById("metaPixelId");
+          const pixelEnabled = document.getElementById("metaPixelEnabled");
+          const pixelNote = document.getElementById("metaPixelNote");
+          if (state.hasMetaField && state.hasMetaEnabledField) {
+            pixelInput.disabled = false;
+            pixelEnabled.disabled = false;
+            pixelInput.value = s.meta_pixel_id || "";
+            pixelEnabled.checked = !!s.meta_pixel_enabled;
+            if (pixelNote) pixelNote.textContent = "Solo números (10 a 20 dígitos).";
+          } else {
+            pixelInput.disabled = true;
+            pixelEnabled.disabled = true;
+            pixelInput.value = "";
+            pixelEnabled.checked = false;
+            pixelInput.placeholder = "Faltan campos meta_pixel_* en PocketBase";
+            if (pixelNote) pixelNote.textContent = "Este cliente todavía no tiene habilitado Meta Pixel en la base.";
           }
           updateCounters();
         }
@@ -763,10 +817,10 @@
           if (txt) txt.textContent = `Completado: ${pct}% · ${activeServices} servicios activos · ${activeGallery} imágenes activas`;
         }
 
-        async function saveSettings({ fromContact = false } = {}) {
-          const saveBtnId = fromContact ? "saveSettingsBtnContact" : "saveSettingsBtn";
-          const msgEl = fromContact ? settingsContactMsg : settingsMsg;
-          const savedEl = fromContact ? settingsContactLastSaved : settingsLastSaved;
+        async function saveSettings({ fromContact = false, fromMarketing = false } = {}) {
+          const saveBtnId = fromMarketing ? "saveSettingsBtnMarketing" : (fromContact ? "saveSettingsBtnContact" : "saveSettingsBtn");
+          const msgEl = fromMarketing ? settingsMarketingMsg : (fromContact ? settingsContactMsg : settingsMsg);
+          const savedEl = fromMarketing ? settingsMarketingLastSaved : (fromContact ? settingsContactLastSaved : settingsLastSaved);
           setSaving(saveBtnId, true);
           setMsg(msgEl, "");
           if (!state.siteSettingsId) {
@@ -784,6 +838,12 @@
           if (state.hasMapsField) {
             body.maps_url = (document.getElementById("mapsUrl").value || "").trim();
           }
+          if (state.hasMetaField) {
+            body.meta_pixel_id = (document.getElementById("metaPixelId").value || "").trim();
+          }
+          if (state.hasMetaEnabledField) {
+            body.meta_pixel_enabled = !!document.getElementById("metaPixelEnabled").checked;
+          }
           const rawWa = document.getElementById("whatsappNumber").value || "";
           const waDigits = rawWa.replace(/\D/g, "");
           if (waDigits) body.whatsapp_url = `https://wa.me/${waDigits}`;
@@ -799,6 +859,11 @@
           }
           if (state.hasMapsField && !isValidMapsUrl(body.maps_url)) {
             setMsg(msgEl, "Google Maps URL inválido. Usá un enlace de Google Maps.");
+            setSaving(saveBtnId, false);
+            return;
+          }
+          if (state.hasMetaField && !isValidPixelId(body.meta_pixel_id)) {
+            setMsg(msgEl, "Meta Pixel ID inválido. Debe tener solo números (10 a 20 dígitos).");
             setSaving(saveBtnId, false);
             return;
           }
@@ -959,6 +1024,9 @@
         document.getElementById("saveSettingsBtnContact").addEventListener("click", () => {
           saveSettings({ fromContact: true }).catch(() => setMsg(settingsContactMsg, "Error al guardar."));
         });
+        document.getElementById("saveSettingsBtnMarketing").addEventListener("click", () => {
+          saveSettings({ fromMarketing: true }).catch(() => setMsg(settingsMarketingMsg, "Error al guardar."));
+        });
         document.getElementById("saveServicesBtn").addEventListener("click", () => {
           saveServices().catch(() => setMsg(servicesMsg, "Error al guardar servicios."));
         });
@@ -969,7 +1037,7 @@
           changePassword().catch(() => setMsg(passwordMsg, "Error cambiando contraseña."));
         });
         document.getElementById("logoutBtn").addEventListener("click", logout);
-        ["heroTitle","heroSubtitle","phone","whatsappNumber","address","mapsUrl"].forEach((id) => {
+        ["heroTitle","heroSubtitle","phone","whatsappNumber","address","mapsUrl","metaPixelId","metaPixelEnabled"].forEach((id) => {
           const el = document.getElementById(id);
           if (!el) return;
           el.addEventListener("input", () => {
