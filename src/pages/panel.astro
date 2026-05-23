@@ -32,6 +32,7 @@
         box-shadow: 0 1px 2px rgba(0,0,0,.04);
       }
       .card.hero-block { background: #eef6ff; border-color: #9dc7ff; border-left: 6px solid #2563eb; }
+      .card.contact-block { background: #f0f9ff; border-color: #b8e6ff; border-left: 6px solid #0284c7; }
       .card.services-block { background: #effcf2; border-color: #a8dfb5; border-left: 6px solid #16a34a; }
       .card.about-block { background: #fff7ed; border-color: #f9c79e; border-left: 6px solid #ea580c; }
       .card.security-block { background: #f5f3ff; border-color: #cbc3ff; border-left: 6px solid #7c3aed; }
@@ -47,6 +48,7 @@
         letter-spacing: 0.3px;
       }
       .section-title.hero { background: #dbeafe; color: #1d4ed8; }
+      .section-title.contact { background: #e0f2fe; color: #0369a1; }
       .section-title.services { background: #dcfce7; color: #15803d; }
       .section-title.about { background: #ffedd5; color: #c2410c; }
       .section-title.security { background: #ede9fe; color: #6d28d9; }
@@ -244,7 +246,7 @@
           <div class="topbar">
             <div>
               <div class="section-title hero">SECCION 1</div>
-              <h2>Inicio (Hero y contacto)</h2>
+              <h2>Inicio (Hero)</h2>
             </div>
             <div class="row">
               <span id="sessionInfo" class="status"></span>
@@ -259,6 +261,31 @@
               <input id="heroTitle" type="text" maxlength="90" />
               <div id="heroTitleCounter" class="counter">0/90</div>
             </div>
+          </div>
+          <div class="spacer"></div>
+          <div>
+            <label for="heroSubtitle">Subtítulo principal</label>
+            <textarea id="heroSubtitle" maxlength="220"></textarea>
+            <div id="heroSubtitleCounter" class="counter">0/220</div>
+          </div>
+          <div class="spacer"></div>
+          <h2 style="margin:0 0 6px;">Imagen principal (Hero)</h2>
+          <p class="muted" style="margin:0 0 8px;">Esta imagen se muestra en el bloque principal, lado derecho.</p>
+          <div id="heroGalleryList" class="gallery-grid"></div>
+          <div class="spacer"></div>
+          <button id="saveSettingsBtn" class="btn primary" type="button">Guardar inicio</button>
+          <div id="settingsMsg" class="msg"></div>
+          <div id="settingsLastSaved" class="field-note"></div>
+          <div class="field-note">Límites: título 90, subtítulo 220.</div>
+        </div>
+
+        <div class="spacer"></div>
+
+        <div class="card contact-block">
+          <div class="section-title contact">SECCION 2</div>
+          <h2>Contacto y ubicación</h2>
+          <p class="muted">Datos que se muestran en la sección de contacto de la web.</p>
+          <div class="grid cols-2">
             <div>
               <label for="phone">Teléfono</label>
               <input id="phone" type="text" />
@@ -280,26 +307,14 @@
             </div>
           </div>
           <div class="spacer"></div>
-          <div>
-            <label for="heroSubtitle">Subtítulo principal</label>
-            <textarea id="heroSubtitle" maxlength="220"></textarea>
-            <div id="heroSubtitleCounter" class="counter">0/220</div>
-          </div>
-          <div class="spacer"></div>
-          <h2 style="margin:0 0 6px;">Imagen principal (Hero)</h2>
-          <p class="muted" style="margin:0 0 8px;">Esta imagen se muestra en el bloque principal, lado derecho.</p>
-          <div id="heroGalleryList" class="gallery-grid"></div>
-          <div class="spacer"></div>
-          <button id="saveSettingsBtn" class="btn primary" type="button">Guardar portada y contacto</button>
-          <div id="settingsMsg" class="msg"></div>
-          <div id="settingsLastSaved" class="field-note"></div>
-          <div class="field-note">Límites: título 90, subtítulo 220, dirección 120.</div>
+          <button id="saveSettingsBtnContact" class="btn primary" type="button">Guardar contacto y ubicación</button>
+          <div class="field-note">Límite: dirección 120.</div>
         </div>
 
         <div class="spacer"></div>
 
         <div class="card services-block">
-          <div class="section-title services">SECCION 2</div>
+          <div class="section-title services">SECCION 3</div>
           <h2>Tus servicios</h2>
           <p class="muted">Editá los textos y activá/desactivá servicios.</p>
           <div id="servicesList"></div>
@@ -311,7 +326,7 @@
         <div class="spacer"></div>
 
         <div class="card about-block">
-          <div class="section-title about">SECCION 3</div>
+          <div class="section-title about">SECCION 4</div>
           <h2>Fotos del sitio</h2>
           <p class="muted">Gestioná imágenes del sitio en espacios fijos del diseño aprobado.</p>
           <div id="galleryList" class="gallery-grid"></div>
@@ -325,7 +340,7 @@
         <div class="spacer"></div>
 
         <div class="card security-block">
-          <div class="section-title security">SECCION 4</div>
+          <div class="section-title security">SECCION 5</div>
           <h2>Seguridad</h2>
           <p class="muted">Cambiar contraseña del usuario actual.</p>
           <div class="grid cols-2">
@@ -932,6 +947,9 @@
           sendPasswordReset().catch(() => setMsg(forgotMsg, "Error enviando recuperación."));
         });
         document.getElementById("saveSettingsBtn").addEventListener("click", () => {
+          saveSettings().catch(() => setMsg(settingsMsg, "Error al guardar."));
+        });
+        document.getElementById("saveSettingsBtnContact").addEventListener("click", () => {
           saveSettings().catch(() => setMsg(settingsMsg, "Error al guardar."));
         });
         document.getElementById("saveServicesBtn").addEventListener("click", () => {
