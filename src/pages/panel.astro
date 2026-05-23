@@ -308,6 +308,8 @@
           </div>
           <div class="spacer"></div>
           <button id="saveSettingsBtnContact" class="btn primary" type="button">Guardar contacto y ubicación</button>
+          <div id="settingsContactMsg" class="msg"></div>
+          <div id="settingsContactLastSaved" class="field-note"></div>
           <div class="field-note">Límite: dirección 120.</div>
         </div>
 
@@ -375,10 +377,12 @@
         const loginMsg = document.getElementById("loginMsg");
         const forgotMsg = document.getElementById("forgotMsg");
         const settingsMsg = document.getElementById("settingsMsg");
+        const settingsContactMsg = document.getElementById("settingsContactMsg");
         const servicesMsg = document.getElementById("servicesMsg");
         const galleryMsg = document.getElementById("galleryMsg");
         const passwordMsg = document.getElementById("passwordMsg");
         const settingsLastSaved = document.getElementById("settingsLastSaved");
+        const settingsContactLastSaved = document.getElementById("settingsContactLastSaved");
         const servicesLastSaved = document.getElementById("servicesLastSaved");
         const galleryLastSaved = document.getElementById("galleryLastSaved");
         const servicesList = document.getElementById("servicesList");
@@ -759,12 +763,15 @@
           if (txt) txt.textContent = `Completado: ${pct}% · ${activeServices} servicios activos · ${activeGallery} imágenes activas`;
         }
 
-        async function saveSettings() {
-          setSaving("saveSettingsBtn", true);
-          setMsg(settingsMsg, "");
+        async function saveSettings({ fromContact = false } = {}) {
+          const saveBtnId = fromContact ? "saveSettingsBtnContact" : "saveSettingsBtn";
+          const msgEl = fromContact ? settingsContactMsg : settingsMsg;
+          const savedEl = fromContact ? settingsContactLastSaved : settingsLastSaved;
+          setSaving(saveBtnId, true);
+          setMsg(msgEl, "");
           if (!state.siteSettingsId) {
-            setMsg(settingsMsg, "Falta registro de site_settings.");
-            setSaving("saveSettingsBtn", false);
+            setMsg(msgEl, "Falta registro de site_settings.");
+            setSaving(saveBtnId, false);
             return;
           }
           const body = {
@@ -781,18 +788,18 @@
           const waDigits = rawWa.replace(/\D/g, "");
           if (waDigits) body.whatsapp_url = `https://wa.me/${waDigits}`;
           if (!body.hero_title.trim()) {
-            setMsg(settingsMsg, "El título principal es obligatorio.");
-            setSaving("saveSettingsBtn", false);
+            setMsg(msgEl, "El título principal es obligatorio.");
+            setSaving(saveBtnId, false);
             return;
           }
           if (rawWa && waDigits.length < 8) {
-            setMsg(settingsMsg, "WhatsApp número parece inválido.");
-            setSaving("saveSettingsBtn", false);
+            setMsg(msgEl, "WhatsApp número parece inválido.");
+            setSaving(saveBtnId, false);
             return;
           }
           if (state.hasMapsField && !isValidMapsUrl(body.maps_url)) {
-            setMsg(settingsMsg, "Google Maps URL inválido. Usá un enlace de Google Maps.");
-            setSaving("saveSettingsBtn", false);
+            setMsg(msgEl, "Google Maps URL inválido. Usá un enlace de Google Maps.");
+            setSaving(saveBtnId, false);
             return;
           }
           const res = await fetch(`${pbUrl}/api/collections/site_settings/records/${state.siteSettingsId}`, {
@@ -801,15 +808,15 @@
             body: JSON.stringify(body)
           });
           if (!res.ok) {
-            setMsg(settingsMsg, `Error al guardar configuración (${res.status}).`);
-            setSaving("saveSettingsBtn", false);
+            setMsg(msgEl, `Error al guardar configuración (${res.status}).`);
+            setSaving(saveBtnId, false);
             return;
           }
-          setMsg(settingsMsg, "Guardado correctamente.", true);
-          settingsLastSaved.textContent = `Última actualización: ${new Date().toLocaleString()}`;
+          setMsg(msgEl, "Guardado correctamente.", true);
+          savedEl.textContent = `Última actualización: ${new Date().toLocaleString()}`;
           markSaved();
           updateProgress();
-          setSaving("saveSettingsBtn", false);
+          setSaving(saveBtnId, false);
         }
 
         async function saveServices() {
@@ -947,10 +954,10 @@
           sendPasswordReset().catch(() => setMsg(forgotMsg, "Error enviando recuperación."));
         });
         document.getElementById("saveSettingsBtn").addEventListener("click", () => {
-          saveSettings().catch(() => setMsg(settingsMsg, "Error al guardar."));
+          saveSettings({ fromContact: false }).catch(() => setMsg(settingsMsg, "Error al guardar."));
         });
         document.getElementById("saveSettingsBtnContact").addEventListener("click", () => {
-          saveSettings().catch(() => setMsg(settingsMsg, "Error al guardar."));
+          saveSettings({ fromContact: true }).catch(() => setMsg(settingsContactMsg, "Error al guardar."));
         });
         document.getElementById("saveServicesBtn").addEventListener("click", () => {
           saveServices().catch(() => setMsg(servicesMsg, "Error al guardar servicios."));

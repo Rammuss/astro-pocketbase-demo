@@ -386,8 +386,8 @@
 <div id="map-media-wrapper" class="h-64 lg:h-1/2 relative">
 <img id="map-image" alt="UbicaciÃ³n de la oficina" class="w-full h-full object-cover grayscale contrast-125 opacity-80" data-alt="A stylized, architectural map background showing a city grid layout with a modern, technical aesthetic. The image uses a monochromatic blueprint style with clean white lines on a deep charcoal background, signifying a precise location in a metropolitan tech hub. The mood is sophisticated and corporate." data-location="Madrid" src="/assets/img/stitch/image4.jpg"/>
 <iframe id="map-embed" class="hidden w-full h-full border-0" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Mapa de ubicación"></iframe>
-<div class="absolute inset-0 bg-primary/20"></div>
-<div class="absolute inset-0 flex items-center justify-center">
+<div id="map-overlay" class="absolute inset-0 bg-primary/20"></div>
+<div id="map-pin" class="absolute inset-0 flex items-center justify-center">
 <div class="bg-white p-4 rounded-full shadow-2xl animate-bounce">
 <span class="material-symbols-outlined text-on-tertiary-container text-4xl" style="font-variation-settings: 'FILL' 1;">location_on</span>
 </div>
@@ -483,7 +483,11 @@
 
 <script is:inline>
   (async () => {
-    const baseUrl = (window.POCKETBASE_URL || localStorage.getItem("pb_url") || "").replace(/\/$/, "");
+    const host = window.location.hostname || "";
+    const inferredPbUrl = host.startsWith("demo.")
+      ? `${window.location.protocol}//pb-${host}`
+      : "";
+    const baseUrl = (window.POCKETBASE_URL || localStorage.getItem("pb_url") || inferredPbUrl || "").replace(/\/$/, "");
     if (!baseUrl) return;
 
     const setText = (id, value) => {
@@ -506,6 +510,12 @@
         if (u.pathname.includes("/maps/embed")) return value;
         const q = u.searchParams.get("q");
         if (q) return `https://www.google.com/maps?q=${encodeURIComponent(q)}&output=embed`;
+        const coordMatch = `${u.pathname}${u.search}`.match(/@(-?\d+(?:\.\d+)?),(-?\d+(?:\.\d+)?)/);
+        if (coordMatch) {
+          const lat = coordMatch[1];
+          const lng = coordMatch[2];
+          return `https://www.google.com/maps?q=${lat},${lng}&output=embed`;
+        }
         const query = (address || "").trim();
         if (query) return `https://www.google.com/maps?q=${encodeURIComponent(query)}&output=embed`;
         return "";
@@ -529,6 +539,8 @@
           const mapLink = document.getElementById("contact-map-link");
           const mapImage = document.getElementById("map-image");
           const mapEmbed = document.getElementById("map-embed");
+          const mapOverlay = document.getElementById("map-overlay");
+          const mapPin = document.getElementById("map-pin");
           const mapEmbedUrl = getEmbedMapUrl(settings.maps_url, settings.address);
           if (mapLink && settings.maps_url) {
             mapLink.classList.remove("hidden");
@@ -538,6 +550,8 @@
             mapEmbed.classList.remove("hidden");
             mapEmbed.setAttribute("src", mapEmbedUrl);
             mapImage.classList.add("hidden");
+            if (mapOverlay) mapOverlay.classList.add("hidden");
+            if (mapPin) mapPin.classList.add("hidden");
           }
 
           const cta = document.getElementById("cta-primary");
