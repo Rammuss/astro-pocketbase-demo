@@ -525,7 +525,7 @@
     };
 
     try {
-      const settingsRes = await fetch(`${baseUrl}/api/collections/site_settings/records?page=1&perPage=1&sort=-created`);
+      const settingsRes = await fetch(`${baseUrl}/api/collections/site_settings/records?page=1&perPage=1`);
       if (settingsRes.ok) {
         const settingsJson = await settingsRes.json();
         const settings = settingsJson?.items?.[0];
